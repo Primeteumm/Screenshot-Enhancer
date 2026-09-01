@@ -4,7 +4,9 @@ Windows için tepside (system tray) çalışan küçük bir verimlilik uygulamas
 
 ## Nasıl çalışır
 
-**Yakalama** iki yoldan olur, ikisi de aynı anda açık olabilir:
+**Kendi yakalaması** — uygulama artık ekran görüntüsünü kendisi de alabilir. `Ctrl+Shift+A` ekranı dondurup alan seçtirir, `Ctrl+Shift+F` imlecin bulunduğu ekranın tamamını alır. Sonuç doğrudan kutucuk olur ve panoya da yazılır. Seçim sırasında `Esc` vazgeçirir. Bu iki kısayol duraklatmadan etkilenmez: açıkça istenen bir işlemdir.
+
+**Dışarıdan yakalama** iki yoldan olur, ikisi de aynı anda açık olabilir:
 
 - **Pano izleme** — `PrtSc`, `Alt+PrtSc`, `Win+Shift+S` ve Ekran Alıntısı Aracı gibi panoya kopyalayan her yöntem. Varsayılan "Sadece ekran görüntüleri" modunda, panoda metin/HTML de varsa yok sayılır; böylece tarayıcıdan resim kopyaladığında kutucuk çıkmaz.
 - **Klasör izleme** — `Win+PrtSc` ile diske kaydedilen görüntüler. `Pictures\Screenshots`, `Pictures\Ekran Görüntüleri` ve OneDrive karşılıkları otomatik bulunur; ayarlardan ek klasör eklenebilir.
@@ -27,7 +29,7 @@ Kutucuğun üstüne gelince kopyala / farklı kaydet / aç / **metni kopyala (OC
 
 **Metni kopyala (OCR)**, Windows'un yerleşik `Windows.Media.Ocr` motorunu PowerShell üzerinden çağırır (`scripts/ocr.ps1`): harici bağımlılık ya da ağ trafiği yok, diller Windows dil ayarlarından gelir.
 
-**Global kısayollar** uygulama arka plandayken de çalışır: son görüntüyü tekrar göster (varsayılan `Ctrl+Shift+V`) ve yakalamayı duraklat/sürdür (`Ctrl+Shift+P`). Ayarlardan kombinasyona basarak değiştirilir; `Backspace` kısayolu kaldırır. Başka bir uygulama kısayolu tutuyorsa ayarlarda uyarı görünür.
+**Global kısayollar** uygulama arka plandayken de çalışır: bölge seçerek yakala (`Ctrl+Shift+A`), tüm ekranı yakala (`Ctrl+Shift+F`), son görüntüyü tekrar göster (`Ctrl+Shift+V`) ve yakalamayı duraklat/sürdür (`Ctrl+Shift+P`). Ayarlardan kombinasyona basarak değiştirilir; `Backspace` kısayolu kaldırır. Başka bir uygulama kısayolu tutuyorsa ayarlarda uyarı görünür.
 
 **Yakalama sesi** dosya yerine Web Audio ile sentezlenir — ne ek varlık ne de CSP izni gerekir.
 
@@ -64,7 +66,7 @@ Tepsi simgesine tıklayınca açılır. Tüm değişiklikler anında uygulanır,
 | Genel | Windows açılışında başlat, açılışta pencereyi gizle |
 | Yakalama | Pano izleme ve modu, kontrol sıklığı, klasör izleme, ek klasörler |
 | Görünüm | Nerede belirsin (alındığı yerde / sabit konumda), 8 yönlü konum ızgarası, kutucuk boyutu, kenar boşluğu, aynı anda gösterilecek kutucuk sayısı, ekranda kalma süresi, saydamlık, hangi monitörde çıkacağı, tema, araç çubuğu |
-| Kısayollar | Global kısayollar açık/kapalı, son görüntüyü göster, yakalamayı duraklat |
+| Kısayollar | Global kısayollar açık/kapalı, bölge seçerek yakala, tüm ekranı yakala, son görüntüyü göster, yakalamayı duraklat |
 | Ses | Yakalama sesi açık/kapalı, ses düzeyi |
 | Animasyon | Açık/kapalı, tür (kayarak / yandan kayarak / büyüyerek / soluklaşarak), yumuşatma eğrisi (yaylı / yumuşak / keskin / akıcı / giriş-çıkış / doğrusal), giriş ve çıkış süreleri, kayma mesafesi |
 | Depolama | Dosya adı öneki, geçici dosyaların saklanma süresi, klasörü aç / temizle |
@@ -87,8 +89,9 @@ src/main/          ana süreç
   clipboardWatcher.js  pano yoklama + ucuz parmak izi
   folderWatcher.js     ekran görüntüsü klasörleri
   previewManager.js    önizleme penceresi ve geometri
+  capture.js       ekran yakalama ve bölge seçimi
   tray.js, settingsWindow.js
 src/preload/       contextBridge köprüleri
-src/renderer/      önizleme kutucuğu ve ayarlar arayüzü
+src/renderer/      önizleme kutucuğu, bölge seçimi ve ayarlar arayüzü
 scripts/           ikon üreteci, OCR betiği
 ```

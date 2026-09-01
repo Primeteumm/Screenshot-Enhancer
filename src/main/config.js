@@ -51,6 +51,9 @@ const DEFAULTS = {
   },
   shortcuts: {
     enabled: true,
+    // uygulamanin kendi yakalamasi
+    captureRegion: 'CommandOrControl+Shift+A',
+    captureScreen: 'CommandOrControl+Shift+F',
     showLast: 'CommandOrControl+Shift+V',
     togglePause: 'CommandOrControl+Shift+P'
   },

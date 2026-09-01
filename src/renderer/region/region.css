@@ -1,0 +1,85 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  cursor: crosshair;
+  user-select: none;
+  font-family: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+}
+
+/* Donmus ekran goruntusu: secim sirasinda alttaki masaustu degisse bile
+   kullanicinin gordugu kare sabit kalir. */
+#shot {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  -webkit-user-drag: none;
+}
+
+#veil {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 10, 16, 0.45);
+}
+
+/* Secili alan: cevresini devasa bir golgeyle karartip kendisini acikta birakir. */
+#box {
+  position: absolute;
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 0 100vmax rgba(8, 10, 16, 0.45);
+  pointer-events: none;
+}
+
+#size {
+  position: absolute;
+  top: -26px;
+  left: 0;
+  padding: 3px 7px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  background: rgba(14, 17, 24, 0.92);
+  white-space: nowrap;
+}
+
+/* secim ekranin en ustundeyse etiketi ice al */
+#box.tight #size {
+  top: 4px;
+  left: 4px;
+}
+
+#hint {
+  position: absolute;
+  left: 50%;
+  bottom: 48px;
+  transform: translateX(-50%);
+  padding: 9px 16px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(14, 17, 24, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  transition: opacity 140ms ease;
+}
+
+#hint.gone {
+  opacity: 0;
+}
+
+#hint b {
+  font-weight: 700;
+}

@@ -10,6 +10,7 @@ const clipboardWatcher = require('./clipboardWatcher')
 const folderWatcher = require('./folderWatcher')
 const settingsWindow = require('./settingsWindow')
 const tray = require('./tray')
+const capture = require('./capture')
 
 const ASSETS = path.join(__dirname, '..', '..', 'assets')
 
@@ -34,10 +35,13 @@ function main() {
     if (firstRun) config.save()
     store.init()
 
+    capture.registerIpc()
     tray.create({
       quit: quitApp,
       testPreview: showTestPreview,
       showLast: showLastCapture,
+      captureRegion: () => takeCapture('region'),
+      captureScreen: () => takeCapture('screen'),
       setPaused: paused => config.update({ capture: { paused } })
     })
 
@@ -61,6 +65,7 @@ function main() {
 
 function quitApp() {
   global.__isQuitting = true
+  capture.closeOverlay()
   clipboardWatcher.stop()
   folderWatcher.stop()
   globalShortcut.unregisterAll()
@@ -180,6 +185,31 @@ function togglePause() {
   config.update({ capture: { paused: !config.get().capture.paused } })
 }
 
+// Uygulamanin kendi ekran goruntusu. Duraklatma yalnizca izleyicileri kapatir;
+// kullanicinin acikca istedigi bu yakalama her zaman calisir.
+let capturing = false
+
+async function takeCapture(mode) {
+  if (capturing) return
+  capturing = true
+  try {
+    const image = await capture.capture(mode)
+    if (!image || image.isEmpty()) return
+    const record = store.saveImage(image, { source: 'capture' })
+    // Windows'un kendi kisayollarindaki gibi pano da dolsun; kendi
+    // yazdigimiz goruntu izleyiciyi tekrar tetiklemesin.
+    clipboardWatcher.suppress(image)
+    clipboard.writeImage(image)
+    record.cursorPoint = screen.getCursorScreenPoint()
+    rememberCapture(record)
+    previewManager.add(record)
+  } catch (err) {
+    console.error('[capture]', err.message)
+  } finally {
+    capturing = false
+  }
+}
+
 function applyShortcuts() {
   globalShortcut.unregisterAll()
   shortcutErrors = []
@@ -194,6 +224,8 @@ function applyShortcuts() {
       shortcutErrors.push(accelerator)
     }
   }
+  bind(shortcuts.captureRegion, () => takeCapture('region'))
+  bind(shortcuts.captureScreen, () => takeCapture('screen'))
   bind(shortcuts.showLast, showLastCapture)
   bind(shortcuts.togglePause, togglePause)
 }

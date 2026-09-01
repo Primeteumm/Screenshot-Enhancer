@@ -28,6 +28,9 @@ function buildMenu(actions) {
   return Menu.buildFromTemplate([
     { label: 'Screenshot Enhancer', enabled: false },
     { type: 'separator' },
+    { label: 'Bölge yakala', click: () => actions.captureRegion() },
+    { label: 'Tüm ekranı yakala', click: () => actions.captureScreen() },
+    { type: 'separator' },
     {
       label: 'Yakalamayı duraklat',
       type: 'checkbox',
