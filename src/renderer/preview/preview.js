@@ -324,52 +324,11 @@ function dismiss(card, immediate = false) {
 
 /* ---------------- yakalama sesi ---------------- */
 
-// Dosya yerine Web Audio ile sentezleniyor: ne varlik ne de CSP izni gerekiyor.
-let audio = null
-
+// Sentez shared/chime.js icinde; ayarlardaki "dinle" dugmesi de ayni sesi calar.
 function playShutter() {
   const settings = layout.sound
   if (!settings || !settings.enabled) return
-  const level = Math.min(100, Math.max(0, settings.volume)) / 100
-  if (!level) return
-  try {
-    if (!audio) audio = new AudioContext()
-    if (audio.state === 'suspended') audio.resume()
-    const now = audio.currentTime
-
-    // kisa gurultu patlamasi (deklansor)
-    const length = Math.floor(audio.sampleRate * 0.09)
-    const buffer = audio.createBuffer(1, length, audio.sampleRate)
-    const data = buffer.getChannelData(0)
-    for (let i = 0; i < length; i++) {
-      const t = i / length
-      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - t, 3)
-    }
-    const noise = audio.createBufferSource()
-    noise.buffer = buffer
-    const band = audio.createBiquadFilter()
-    band.type = 'bandpass'
-    band.frequency.value = 2400
-    band.Q.value = 0.9
-    const noiseGain = audio.createGain()
-    noiseGain.gain.value = level * 0.45
-    noise.connect(band).connect(noiseGain).connect(audio.destination)
-    noise.start(now)
-
-    // ustune inen kisa bir tik
-    const tone = audio.createOscillator()
-    tone.type = 'triangle'
-    tone.frequency.setValueAtTime(1150, now)
-    tone.frequency.exponentialRampToValueAtTime(320, now + 0.07)
-    const toneGain = audio.createGain()
-    toneGain.gain.setValueAtTime(level * 0.3, now)
-    toneGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.09)
-    tone.connect(toneGain).connect(audio.destination)
-    tone.start(now)
-    tone.stop(now + 0.1)
-  } catch {
-    /* ses cikmazsa akis bozulmasin */
-  }
+  if (typeof window.playChime === 'function') window.playChime(settings.volume)
 }
 
 /* ---------------- fare gecirgenligi ---------------- */

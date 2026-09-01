@@ -33,7 +33,7 @@ Tanıma doğrudan yazının piksel yüksekliğine bağlı olduğu için görünt
 
 **Global kısayollar** uygulama arka plandayken de çalışır: bölge seçerek yakala (`Ctrl+Shift+A`), tüm ekranı yakala (`Ctrl+Shift+F`), son görüntüyü tekrar göster (`Ctrl+Shift+V`) ve yakalamayı duraklat/sürdür (`Ctrl+Shift+P`). Ayarlardan kombinasyona basarak değiştirilir; `Backspace` kısayolu kaldırır. Başka bir uygulama kısayolu tutuyorsa ayarlarda uyarı görünür.
 
-**Yakalama sesi** dosya yerine Web Audio ile sentezlenir — ne ek varlık ne de CSP izni gerekir.
+**Yakalama sesi** dosya yerine Web Audio ile sentezlenir — ne ek varlık ne de CSP izni gerekir. Yumuşak, iki notalı kısa bir blip (188 ms): zarf 12 ms'lik girişle başlayıp üstel söner, alçak geçirgen süzgeçten geçer. Başlangıç ve bitiş genliği sıfır olduğu için hoparlörde tık/pat sesi oluşmaz. Sentez `src/renderer/shared/chime.js` içinde; ayarlardaki "Çal" düğmesi ekran görüntüsü almadan dinlemeyi sağlar.
 
 Önizleme penceresi odağı çalmaz ve kutucukların dışında kalan alan tıklama geçirgendir — altındaki uygulamayla çalışmaya devam edebilirsin.
 
@@ -69,7 +69,7 @@ Tepsi simgesine tıklayınca açılır. Tüm değişiklikler anında uygulanır,
 | Yakalama | Pano izleme ve modu, kontrol sıklığı, klasör izleme, ek klasörler |
 | Görünüm | Nerede belirsin (alındığı yerde / sabit konumda), 8 yönlü konum ızgarası, kutucuk boyutu, kenar boşluğu, aynı anda gösterilecek kutucuk sayısı, ekranda kalma süresi, saydamlık, hangi monitörde çıkacağı, tema, araç çubuğu |
 | Kısayollar | Global kısayollar açık/kapalı, bölge seçerek yakala, tüm ekranı yakala, son görüntüyü göster, yakalamayı duraklat |
-| Ses | Yakalama sesi açık/kapalı, ses düzeyi |
+| Ses | Yakalama sesi açık/kapalı, ses düzeyi, dinleme düğmesi |
 | Animasyon | Açık/kapalı, tür (kayarak / yandan kayarak / büyüyerek / soluklaşarak), yumuşatma eğrisi (yaylı / yumuşak / keskin / akıcı / giriş-çıkış / doğrusal), giriş ve çıkış süreleri, kayma mesafesi |
 | Depolama | Dosya adı öneki, geçici dosyaların saklanma süresi, klasörü aç / temizle |
 
@@ -95,5 +95,6 @@ src/main/          ana süreç
   tray.js, settingsWindow.js
 src/preload/       contextBridge köprüleri
 src/renderer/      önizleme kutucuğu, bölge seçimi ve ayarlar arayüzü
+  shared/chime.js  yakalama sesinin sentezi (iki pencere de kullanır)
 scripts/           ikon üreteci, OCR betiği
 ```

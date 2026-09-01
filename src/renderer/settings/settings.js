@@ -257,6 +257,11 @@ document.getElementById('btn-add-folder').addEventListener('click', async () => 
   await save({ capture: { extraFolders: [...state.capture.extraFolders, dir] } })
 })
 
+document.getElementById('btn-sound').addEventListener('click', () => {
+  // Acik/kapali ayarindan bagimsiz calar: amaci sesi dinletmek.
+  if (typeof window.playChime === 'function') window.playChime(state.sound.volume || 40)
+})
+
 document.getElementById('btn-open-captures').addEventListener('click', () => window.api.openCaptures())
 
 document.getElementById('btn-clear-captures').addEventListener('click', async () => {
