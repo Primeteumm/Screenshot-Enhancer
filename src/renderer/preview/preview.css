@@ -44,7 +44,9 @@ body {
 
 .stack {
   position: absolute;
-  left: var(--pad);
+  /* Yatayda da --travel kadar pay birakilir; "yandan kayarak" animasyonu
+     pencere kenarinda kirpilmasin diye ana surec pencereyi o kadar genis acar. */
+  left: calc(var(--pad) + var(--travel));
   width: var(--card-w);
   display: flex;
   gap: var(--gap);

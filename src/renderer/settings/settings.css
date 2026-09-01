@@ -294,6 +294,54 @@ button.primary:hover {
   flex: none;
 }
 
+/* ---------- 8 yonlu konum izgarasi ---------- */
+.anchor-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 30px);
+  grid-template-rows: repeat(3, 26px);
+  gap: 4px;
+  flex: none;
+  padding: 6px;
+  border-radius: 10px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  transition: opacity 140ms ease;
+}
+
+.anchor-grid button {
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  padding: 0;
+  transition: background 120ms ease, transform 120ms ease;
+}
+
+.anchor-grid button:hover {
+  background: rgba(255, 255, 255, 0.16);
+  transform: translateY(-1px);
+}
+
+.anchor-grid button.on {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  border-color: transparent;
+}
+
+/* ortadaki hucre secilemez: sadece ekranin merkezini temsil eder */
+.anchor-hub {
+  border-radius: 6px;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.05) 0 3px,
+    transparent 3px 6px
+  );
+}
+
+.anchor-grid.disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
 /* ---------- klasor listesi ---------- */
 .folders {
   padding: 4px 0 12px;

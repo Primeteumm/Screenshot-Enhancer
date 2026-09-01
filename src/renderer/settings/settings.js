@@ -100,12 +100,31 @@ function renderFolders() {
   }
 }
 
+/* ---------------- 8 yonlu konum izgarasi ---------------- */
+
+const anchorGrid = document.getElementById('anchor-grid')
+
+function renderAnchor() {
+  for (const button of anchorGrid.querySelectorAll('button')) {
+    button.classList.toggle('on', button.dataset.anchor === state.preview.anchor)
+  }
+  // Sabit konum secili degilken izgara anlamsiz.
+  anchorGrid.classList.toggle('disabled', state.preview.placement !== 'fixed')
+}
+
+anchorGrid.addEventListener('click', event => {
+  const button = event.target.closest('button')
+  if (!button) return
+  save({ preview: { anchor: button.dataset.anchor } })
+})
+
 /* ---------------- kaydetme ---------------- */
 
 async function save(patch) {
   state = await window.api.update(patch)
   renderAll(state)
   renderFolders()
+  renderAnchor()
 }
 
 for (const control of controls) {
@@ -130,6 +149,7 @@ document.getElementById('btn-reset').addEventListener('click', async () => {
   state = await window.api.reset()
   renderAll(state)
   renderFolders()
+  renderAnchor()
 })
 
 document.getElementById('btn-add-folder').addEventListener('click', async () => {
@@ -157,6 +177,7 @@ window.api.onChanged(config => {
   state = config
   renderAll(state)
   renderFolders()
+  renderAnchor()
 })
 
 window.api.get().then(payload => {
@@ -164,6 +185,7 @@ window.api.get().then(payload => {
   autoFolders = payload.watchedFolders
   renderAll(state)
   renderFolders()
+  renderAnchor()
   showStats(payload.stats)
   document.getElementById('version').textContent = 'v' + payload.version
   if (!payload.packaged) {

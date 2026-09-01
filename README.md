@@ -11,7 +11,7 @@ Windows için tepside (system tray) çalışan küçük bir verimlilik uygulamas
 
 `Win+PrtSc` hem panoya kopyalayıp hem dosyaya yazdığı için aynı kare iki kez gösterilmez: uygulama geçici kopyayı atıp kutucuğu diskteki gerçek dosyaya bağlar, böylece sürüklediğinde asıl dosya gider.
 
-**Konumlandırma** varsayılan olarak "Akıllı" modda: imlecin bittiği noktanın hemen yanında belirir ve yığın ekranın içine doğru büyür. İmleç ekranın alt yarısındaysa kutucuk yukarı, üst yarısındaysa aşağı doğru açılır. Sabit köşe (sağ alt, sol alt, sağ üst, sol üst) de seçilebilir. Çok monitörlü kurulumda kutucuk, görüntünün alındığı ekranda çıkar.
+**Konumlandırma** iki modda çalışır. Varsayılan "alındığı yerde" modunda kutucuk imlecin bittiği noktanın hemen yanında belirir ve yığın ekranın içine doğru büyür: imleç ekranın alt yarısındaysa yukarı, üst yarısındaysa aşağı açılır. "Sabit konumda" modunda ise sekiz yönden biri seçilir — sol üst, orta üst, sağ üst, sol, sağ, sol alt, orta alt, sağ alt. Her iki modda da kutucuk, görüntünün alındığı ekranda çıkar.
 
 **Sürükle-bırak** Electron'un yerel dosya sürüklemesini kullanır, yani karşı uygulama bunu normal bir dosya bırakma işlemi olarak görür.
 
@@ -57,8 +57,8 @@ Tepsi simgesine tıklayınca açılır. Tüm değişiklikler anında uygulanır,
 | --- | --- |
 | Genel | Windows açılışında başlat, açılışta pencereyi gizle |
 | Yakalama | Pano izleme ve modu, kontrol sıklığı, klasör izleme, ek klasörler |
-| Görünüm | Konum, kutucuk boyutu, kenar boşluğu, aynı anda gösterilecek kutucuk sayısı, otomatik gizleme süresi, tema, araç çubuğu |
-| Animasyon | Açık/kapalı, yumuşatma eğrisi (yaylı / yumuşak / keskin / akıcı / giriş-çıkış / doğrusal), giriş ve çıkış süreleri, kayma mesafesi |
+| Görünüm | Nerede belirsin (alındığı yerde / sabit konumda), 8 yönlü konum ızgarası, kutucuk boyutu, kenar boşluğu, aynı anda gösterilecek kutucuk sayısı, ekranda kalma süresi, tema, araç çubuğu |
+| Animasyon | Açık/kapalı, tür (kayarak / yandan kayarak / büyüyerek / soluklaşarak), yumuşatma eğrisi (yaylı / yumuşak / keskin / akıcı / giriş-çıkış / doğrusal), giriş ve çıkış süreleri, kayma mesafesi |
 | Depolama | Dosya adı öneki, geçici dosyaların saklanma süresi, klasörü aç / temizle |
 
 "Önizlemeyi test et" düğmesi sahte bir ekran görüntüsüyle animasyonu tetikler; ayarları ekran görüntüsü almadan denemek için.

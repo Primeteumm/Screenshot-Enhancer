@@ -49,6 +49,59 @@ function exitMs() {
   return layout.animation.enabled ? layout.animation.exitDuration : 1
 }
 
+// Kartin bagli oldugu kenara gore giris/cikis yonu
+function shiftY() {
+  return layout.direction === 'up' ? layout.travel : -layout.travel
+}
+
+function shiftX() {
+  return layout.align === 'left' ? -layout.travel : layout.travel
+}
+
+function enterFrames() {
+  switch (layout.animation.type) {
+    case 'fade':
+      return [{ opacity: 0 }, { opacity: 1 }]
+    case 'pop':
+      return [
+        { transform: 'scale(0.72)', opacity: 0 },
+        { transform: 'scale(1)', opacity: 1 }
+      ]
+    case 'side':
+      return [
+        { transform: 'translateX(' + shiftX() + 'px) scale(0.94)', opacity: 0 },
+        { transform: 'translateX(0) scale(1)', opacity: 1 }
+      ]
+    default:
+      return [
+        { transform: 'translateY(' + shiftY() + 'px) scale(0.9)', opacity: 0 },
+        { transform: 'translateY(0) scale(1)', opacity: 1 }
+      ]
+  }
+}
+
+function exitFrames() {
+  switch (layout.animation.type) {
+    case 'fade':
+      return [{ opacity: 1 }, { opacity: 0 }]
+    case 'pop':
+      return [
+        { transform: 'scale(1)', opacity: 1 },
+        { transform: 'scale(0.82)', opacity: 0 }
+      ]
+    case 'side':
+      return [
+        { transform: 'translateX(0) scale(1)', opacity: 1 },
+        { transform: 'translateX(' + shiftX() * 0.5 + 'px) scale(0.94)', opacity: 0 }
+      ]
+    default:
+      return [
+        { transform: 'translateY(0) scale(1)', opacity: 1 },
+        { transform: 'translateY(' + shiftY() * 0.4 + 'px) scale(0.92)', opacity: 0 }
+      ]
+  }
+}
+
 // Yigin degistiginde kalan kartlari yeni yerlerine yumusak tasi (FLIP).
 function reflow(mutate) {
   const before = new Map()
@@ -213,14 +266,7 @@ function addCard(record) {
   reflow(() => stack.prepend(card))
 
   if (layout.animation.enabled) {
-    const shift = layout.direction === 'up' ? layout.travel : -layout.travel
-    card.animate(
-      [
-        { transform: 'translateY(' + shift + 'px) scale(0.9)', opacity: 0 },
-        { transform: 'translateY(0) scale(1)', opacity: 1 }
-      ],
-      { duration: enterMs(), easing: easing(), fill: 'backwards' }
-    )
+    card.animate(enterFrames(), { duration: enterMs(), easing: easing(), fill: 'backwards' })
   }
 
   while (stack.children.length > maxStack) {
@@ -244,14 +290,11 @@ function dismiss(card, immediate = false) {
 
   if (!layout.animation.enabled || immediate) return finish()
 
-  const shift = layout.direction === 'up' ? layout.travel * 0.4 : -layout.travel * 0.4
-  const anim = card.animate(
-    [
-      { transform: 'translateY(0) scale(1)', opacity: 1 },
-      { transform: 'translateY(' + shift + 'px) scale(0.92)', opacity: 0 }
-    ],
-    { duration: exitMs(), easing: 'cubic-bezier(0.4, 0, 1, 1)', fill: 'forwards' }
-  )
+  const anim = card.animate(exitFrames(), {
+    duration: exitMs(),
+    easing: 'cubic-bezier(0.4, 0, 1, 1)',
+    fill: 'forwards'
+  })
   anim.onfinish = finish
   anim.oncancel = finish
 }

@@ -8,6 +8,18 @@ const DEBUG = Boolean(process.env.SE_DEBUG)
 const POINTER_INTERVAL = 24 // imlec yoklama araligi (ms)
 const HIT_INFLATE = 2 // kart kenarinda titremeyi onlemek icin pay
 
+// Sabit konum secenekleri: dikey x yatay
+const ANCHORS = {
+  'top-left': { v: 'top', h: 'left' },
+  'top-center': { v: 'top', h: 'center' },
+  'top-right': { v: 'top', h: 'right' },
+  left: { v: 'middle', h: 'left' },
+  right: { v: 'middle', h: 'right' },
+  'bottom-left': { v: 'bottom', h: 'left' },
+  'bottom-center': { v: 'bottom', h: 'center' },
+  'bottom-right': { v: 'bottom', h: 'right' }
+}
+
 function clamp(value, min, max) {
   if (max < min) return min
   return Math.min(max, Math.max(min, value))
@@ -185,14 +197,17 @@ class PreviewManager {
     const cardH = preview.size // en kotu durum: kare gorsel
     const slots = Math.max(1, preview.maxStack)
     const stackH = slots * (cardH + GAP) - GAP
+    const travel = anim.enabled ? anim.travel : 0
     return {
       cardW,
       cardH,
       gap: GAP,
       pad: PAD,
-      travel: anim.enabled ? anim.travel : 0,
-      winW: cardW + PAD * 2,
-      winH: stackH + (anim.enabled ? anim.travel : 0) + PAD * 2
+      travel,
+      // Kart, bagli oldugu kenardan pad+travel kadar iceride durur. Yatayda da
+      // ayni pay birakiliyor ki "yandan kayarak" animasyonu kirpilmasin.
+      winW: cardW + (PAD + travel) * 2,
+      winH: stackH + travel + PAD * 2
     }
   }
 
@@ -209,37 +224,50 @@ class PreviewManager {
     // animasyonun basi kirpilir.
     const edge = m.pad + m.travel
 
+    const hPad = m.pad + m.travel
     const winH = Math.min(m.winH, wa.height + edge * 2)
-    const winW = Math.min(m.winW, wa.width + m.pad * 2)
+    const winW = Math.min(m.winW, wa.width + hPad * 2)
 
     let align
     let direction
-    let anchorX
-    let anchorY
+    let cardLeft
+    let cardTop
 
-    if (preview.position === 'smart') {
+    const minLeft = wa.x + margin
+    const maxLeft = wa.x + wa.width - margin - m.cardW
+    const minTop = wa.y + margin
+    const maxTop = wa.y + wa.height - margin - m.cardH
+
+    if (preview.placement === 'cursor') {
+      // Kart, imlecin bittigi noktanin hemen yaninda; yigin ekranin icine buyur.
       align = point.x > wa.x + wa.width / 2 ? 'right' : 'left'
       direction = point.y > wa.y + wa.height / 2 ? 'up' : 'down'
-      anchorX = align === 'right' ? point.x + 20 : point.x - 20
-      anchorY = direction === 'up' ? point.y - 16 : point.y + 16
+      const anchorX = align === 'right' ? point.x + 20 : point.x - 20
+      const anchorY = direction === 'up' ? point.y - 16 : point.y + 16
+      cardLeft = clamp(align === 'right' ? anchorX - m.cardW : anchorX, minLeft, maxLeft)
+      cardTop = clamp(direction === 'up' ? anchorY - m.cardH : anchorY, minTop, maxTop)
     } else {
-      align = preview.position.endsWith('right') ? 'right' : 'left'
-      direction = preview.position.startsWith('bottom') ? 'up' : 'down'
-      anchorX = align === 'right' ? wa.x + wa.width - margin : wa.x + margin
-      anchorY = direction === 'up' ? wa.y + wa.height - margin : wa.y + margin
+      const spot = ANCHORS[preview.anchor] || ANCHORS['bottom-right']
+      align = spot.h
+      // Ust kenara baglandiysa yigin asagi, digerlerinde yukari buyur.
+      direction = spot.v === 'top' ? 'down' : 'up'
+      cardLeft = clamp(
+        spot.h === 'left' ? minLeft
+          : spot.h === 'right' ? maxLeft
+            : wa.x + Math.round((wa.width - m.cardW) / 2),
+        minLeft, maxLeft
+      )
+      cardTop = clamp(
+        spot.v === 'top' ? minTop
+          : spot.v === 'bottom' ? maxTop
+            : wa.y + Math.round((wa.height - m.cardH) / 2),
+        minTop, maxTop
+      )
     }
-
-    // Once kartin kendisini calisma alanina sigdir.
-    const cardLeft = align === 'right'
-      ? clamp(anchorX - m.cardW, wa.x + margin, wa.x + wa.width - margin - m.cardW)
-      : clamp(anchorX, wa.x + margin, wa.x + wa.width - margin - m.cardW)
-    const cardTop = direction === 'up'
-      ? clamp(anchorY - m.cardH, wa.y + margin, wa.y + wa.height - margin - m.cardH)
-      : clamp(anchorY, wa.y + margin, wa.y + wa.height - margin - m.cardH)
 
     // Pencere seffaf ve tiklama gecirgen oldugu icin calisma alaninin biraz
     // disina tasabilir; boylece kart tam istenen noktaya oturur.
-    const x = clamp(cardLeft - m.pad, wa.x - m.pad, wa.x + wa.width + m.pad - winW)
+    const x = clamp(cardLeft - hPad, wa.x - hPad, wa.x + wa.width + hPad - winW)
 
     let y
     let offset = 0

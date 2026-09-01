@@ -19,8 +19,12 @@ const DEFAULTS = {
     extraFolders: []
   },
   preview: {
-    // smart | bottom-right | bottom-left | top-right | top-left
-    position: 'smart',
+    // cursor -> ekran goruntusunun alindigi yerin yaninda
+    // fixed  -> ekranda sabit bir konumda (bkz. anchor)
+    placement: 'cursor',
+    // 8 yon: top-left top-center top-right left right
+    //        bottom-left bottom-center bottom-right
+    anchor: 'bottom-right',
     margin: 28,
     size: 220,
     maxStack: 3,
@@ -30,6 +34,8 @@ const DEFAULTS = {
   },
   animation: {
     enabled: true,
+    // slide (yukari kayarak) | side (yandan) | pop (buyuyerek) | fade
+    type: 'slide',
     enterDuration: 420,
     exitDuration: 220,
     easing: 'spring',
@@ -41,8 +47,55 @@ const DEFAULTS = {
   }
 }
 
+// Serbest metin olarak kaydedilebilen ama sinirli deger kumesi olan alanlar.
+// Bozuk/eski bir deger okunursa varsayilana donulur.
+const ENUMS = {
+  'preview.placement': ['cursor', 'fixed'],
+  'preview.anchor': [
+    'top-left', 'top-center', 'top-right',
+    'left', 'right',
+    'bottom-left', 'bottom-center', 'bottom-right'
+  ],
+  'preview.theme': ['dark', 'light'],
+  'capture.clipboardMode': ['screenshots', 'allImages'],
+  'animation.type': ['slide', 'side', 'pop', 'fade'],
+  'animation.easing': ['linear', 'smooth', 'soft', 'snappy', 'spring', 'inOut']
+}
+
 function clone(value) {
   return JSON.parse(JSON.stringify(value))
+}
+
+function readPath(object, path) {
+  return path.split('.').reduce((acc, key) => (acc == null ? acc : acc[key]), object)
+}
+
+function writePath(object, path, value) {
+  const keys = path.split('.')
+  let node = object
+  for (let i = 0; i < keys.length - 1; i++) node = node[keys[i]]
+  node[keys[keys.length - 1]] = value
+}
+
+function validate(data) {
+  for (const [path, allowed] of Object.entries(ENUMS)) {
+    if (!allowed.includes(readPath(data, path))) writePath(data, path, readPath(DEFAULTS, path))
+  }
+  return data
+}
+
+// Eski surumden gecis: preview.position -> preview.placement + preview.anchor
+function migrate(raw) {
+  const preview = raw && raw.preview
+  if (!preview || typeof preview.position !== 'string' || preview.placement) return raw
+  if (preview.position === 'smart') {
+    preview.placement = 'cursor'
+  } else {
+    preview.placement = 'fixed'
+    preview.anchor = preview.position
+  }
+  delete preview.position
+  return raw
 }
 
 // Sadece DEFAULTS icinde var olan anahtarlari, ayni tipte olmak kosuluyla birlestirir.
@@ -76,7 +129,8 @@ class Config extends EventEmitter {
   load() {
     try {
       const raw = fs.readFileSync(this.file, 'utf8')
-      mergeInto(this.data, JSON.parse(raw), DEFAULTS)
+      mergeInto(this.data, migrate(JSON.parse(raw)), DEFAULTS)
+      validate(this.data)
     } catch {
       /* ilk calistirma veya bozuk dosya: varsayilanlarla devam */
     }
@@ -100,6 +154,7 @@ class Config extends EventEmitter {
 
   update(patch) {
     mergeInto(this.data, patch, DEFAULTS)
+    validate(this.data)
     this.save()
     this.emit('change', this.data)
     return this.data

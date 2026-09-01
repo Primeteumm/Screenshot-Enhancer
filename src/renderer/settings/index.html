@@ -80,16 +80,30 @@
       <h2>Görünüm</h2>
       <div class="row">
         <div class="label">
-          <span>Konum</span>
-          <small>Akıllı: görüntünün alındığı yerin yanında belirir.</small>
+          <span>Nerede belirsin</span>
+          <small>"Alındığı yerde" = imlecin bittiği noktanın yanı.</small>
         </div>
-        <select data-path="preview.position">
-          <option value="smart">Akıllı (imlecin yanı)</option>
-          <option value="bottom-right">Sağ alt</option>
-          <option value="bottom-left">Sol alt</option>
-          <option value="top-right">Sağ üst</option>
-          <option value="top-left">Sol üst</option>
+        <select data-path="preview.placement">
+          <option value="cursor">Alındığı yerde</option>
+          <option value="fixed">Sabit konumda</option>
         </select>
+      </div>
+      <div class="row" id="anchor-row">
+        <div class="label">
+          <span>Ekrandaki konum</span>
+          <small>Görüntünün alındığı ekranın seçilen köşesinde belirir.</small>
+        </div>
+        <div class="anchor-grid" id="anchor-grid">
+          <button type="button" data-anchor="top-left" title="Sol üst"></button>
+          <button type="button" data-anchor="top-center" title="Orta üst"></button>
+          <button type="button" data-anchor="top-right" title="Sağ üst"></button>
+          <button type="button" data-anchor="left" title="Sol"></button>
+          <span class="anchor-hub"></span>
+          <button type="button" data-anchor="right" title="Sağ"></button>
+          <button type="button" data-anchor="bottom-left" title="Sol alt"></button>
+          <button type="button" data-anchor="bottom-center" title="Orta alt"></button>
+          <button type="button" data-anchor="bottom-right" title="Sağ alt"></button>
+        </div>
       </div>
       <div class="row slider">
         <div class="label"><span>Kutucuk boyutu</span></div>
@@ -114,8 +128,8 @@
       </div>
       <div class="row slider">
         <div class="label">
-          <span>Otomatik gizleme</span>
-          <small>0 = kendiliğinden kapanmasın.</small>
+          <span>Ekranda kalma süresi</span>
+          <small>0 = kendiliğinden kapanmasın. Fare üstündeyken sayaç durur.</small>
         </div>
         <div class="control">
           <input type="range" min="0" max="60" step="1" data-path="preview.autoHideSeconds" data-suffix=" sn" />
@@ -143,6 +157,18 @@
       <div class="row">
         <div class="label"><span>Animasyonlar</span></div>
         <label class="switch"><input type="checkbox" data-path="animation.enabled" /><i></i></label>
+      </div>
+      <div class="row">
+        <div class="label">
+          <span>Animasyon türü</span>
+          <small>Kutucuğun ekrana geliş biçimi.</small>
+        </div>
+        <select data-path="animation.type">
+          <option value="slide">Kayarak</option>
+          <option value="side">Yandan kayarak</option>
+          <option value="pop">Büyüyerek</option>
+          <option value="fade">Soluklaşarak</option>
+        </select>
       </div>
       <div class="row">
         <div class="label"><span>Yumuşatma eğrisi</span></div>
