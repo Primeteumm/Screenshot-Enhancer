@@ -1,0 +1,36 @@
+{
+  "name": "screenshot-enhancer",
+  "version": "0.1.0",
+  "description": "Ekran goruntusu alindiginda surukle-birak yapilabilen animasyonlu bir onizleme kutucugu gosteren tray uygulamasi.",
+  "main": "src/main/index.js",
+  "author": "Enes Aydin",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "icons": "node scripts/generate-icons.js",
+    "dist": "electron-builder --win"
+  },
+  "dependencies": {
+    "chokidar": "^3.6.0"
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.enesaydin.screenshotenhancer",
+    "productName": "Screenshot Enhancer",
+    "files": ["src/**/*", "assets/**/*", "package.json"],
+    "win": {
+      "target": ["nsis"],
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "Screenshot Enhancer"
+    }
+  }
+}

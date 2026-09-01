@@ -1,0 +1,289 @@
+:root {
+  --card-w: 220px;
+  --gap: 12px;
+  --pad: 30px;
+  --travel: 56px;
+  --offset: 0px;
+  --radius: 14px;
+
+  --surface: #191c25;
+  --surface-2: #232734;
+  --border: rgba(255, 255, 255, 0.11);
+  --text: #f2f4f9;
+  --muted: rgba(242, 244, 249, 0.62);
+  --accent: #6d8cff;
+  --shadow: 0 14px 34px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+body.light {
+  --surface: #ffffff;
+  --surface-2: #f1f3f8;
+  --border: rgba(15, 18, 28, 0.12);
+  --text: #14171f;
+  --muted: rgba(20, 23, 31, 0.6);
+  --shadow: 0 14px 32px rgba(20, 24, 40, 0.24), 0 2px 6px rgba(20, 24, 40, 0.14);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+  font-family: "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+  color: var(--text);
+  user-select: none;
+  cursor: default;
+}
+
+.stack {
+  position: absolute;
+  left: var(--pad);
+  width: var(--card-w);
+  display: flex;
+  gap: var(--gap);
+}
+
+/* Kartin bagli oldugu kenarda, giris animasyonunun kaymasi icin --travel
+   kadar bosluk birakilir; --offset ekran kenarina sikisildiginda ana surecin
+   uyguladigi duzeltmedir. */
+.stack.up {
+  bottom: calc(var(--pad) + var(--travel) + var(--offset));
+  flex-direction: column-reverse;
+}
+
+.stack.down {
+  top: calc(var(--pad) + var(--travel) + var(--offset));
+  flex-direction: column;
+}
+
+.card {
+  position: relative;
+  width: var(--card-w);
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  cursor: grab;
+  flex: none;
+  -webkit-user-drag: element;
+}
+
+.card:active {
+  cursor: grabbing;
+}
+
+.card.hot {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+/* Ust/alt katmanlar sadece imlec kartin uzerindeyken gorunur. Gorunurluk CSS
+   :hover ile degil, ana surecin isabet testinden gelen .hot sinifiyla surulur;
+   odak almayan ve tiklama gecirgenligi degisen bir pencerede Chromium'un hover
+   takibi guvenilir degil. */
+.overlay {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 140ms ease;
+  pointer-events: none;
+}
+
+.card.hot .overlay {
+  opacity: 1;
+}
+
+/* Pencereyi tasima tutamaci. Kartin govdesi dosya suruklemeye ayrildigi icin
+   pencere hareketi ayri bir bolgeden yapiliyor. */
+.grip {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 58px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  cursor: move;
+}
+
+.grip i {
+  width: 34px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  transition: background 120ms ease, width 120ms ease;
+}
+
+.grip:hover i {
+  width: 44px;
+  background: #fff;
+}
+
+.card.hot .grip {
+  pointer-events: auto;
+}
+
+/* Yalnizca dugmeler fare olayi alir. Katmanin tamami tiklanabilir olsaydi
+   kartin uzerinden surukleme baslatilamazdi: surukleme kaynagi draggable olan
+   .card, katman ise degil. */
+.card.hot .overlay button {
+  pointer-events: auto;
+}
+
+.scrim {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 58%;
+  background: linear-gradient(to top, rgba(8, 10, 16, 0.86), rgba(8, 10, 16, 0));
+  pointer-events: none;
+}
+
+.toolbar {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.toolbar button,
+.close {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 9px;
+  background: rgba(24, 27, 36, 0.82);
+  color: #f2f4f9;
+  cursor: pointer;
+  transition: background 120ms ease, transform 120ms ease;
+}
+
+.toolbar button:hover,
+.close:hover {
+  background: var(--accent);
+  border-color: transparent;
+  transform: translateY(-1px);
+}
+
+.toolbar button.pinned {
+  background: var(--accent);
+  border-color: transparent;
+}
+
+.close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+}
+
+.close:hover {
+  background: #e5484d;
+}
+
+.badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 3px 8px;
+  border-radius: 7px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  background: rgba(24, 27, 36, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #f2f4f9;
+}
+
+svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.progress i {
+  display: block;
+  height: 100%;
+  width: 100%;
+  transform-origin: left center;
+  background: var(--accent);
+}
+
+.toast {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100% - 20px);
+  padding: 7px 13px 7px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #fff;
+  background: rgba(14, 17, 24, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.8);
+  pointer-events: none;
+}
+
+.toast svg {
+  width: 13px;
+  height: 13px;
+  stroke-width: 2.6;
+  color: #5fd08a;
+  flex: none;
+}
+
+.toast.show {
+  animation: toast 1700ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes toast {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+  14% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  76% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -62%) scale(0.96); }
+}

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' data: file:; style-src 'self' 'unsafe-inline'; script-src 'self'" />
+  <title>Screenshot Enhancer</title>
+  <link rel="stylesheet" href="settings.css" />
+</head>
+<body>
+  <header class="titlebar">
+    <div class="brand">
+      <img src="../../../assets/icon.png" alt="" />
+      <span>Screenshot Enhancer</span>
+    </div>
+    <div class="window-buttons">
+      <button id="btn-min" title="Simge durumuna küçült">&#8211;</button>
+      <button id="btn-close" title="Kapat (tepside çalışmaya devam eder)">&#10005;</button>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <h2>Genel</h2>
+      <div class="row">
+        <div class="label">
+          <span>Windows açılışında başlat</span>
+          <small id="autostart-note">Uygulama tepside sessizce başlar.</small>
+        </div>
+        <label class="switch"><input type="checkbox" data-path="general.launchAtLogin" /><i></i></label>
+      </div>
+      <div class="row">
+        <div class="label">
+          <span>Açılışta pencereyi gizle</span>
+          <small>Kapalıysa her açılışta bu pencere görünür.</small>
+        </div>
+        <label class="switch"><input type="checkbox" data-path="general.startHidden" /><i></i></label>
+      </div>
+    </section>
+
+    <section>
+      <h2>Yakalama</h2>
+      <div class="row">
+        <div class="label">
+          <span>Panoyu izle</span>
+          <small>PrtSc, Win+Shift+S, Alt+PrtSc ve ekran alıntısı araçları.</small>
+        </div>
+        <label class="switch"><input type="checkbox" data-path="capture.watchClipboard" /><i></i></label>
+      </div>
+      <div class="row">
+        <div class="label"><span>Pano modu</span></div>
+        <select data-path="capture.clipboardMode">
+          <option value="screenshots">Sadece ekran görüntüleri</option>
+          <option value="allImages">Kopyalanan her görsel</option>
+        </select>
+      </div>
+      <div class="row slider">
+        <div class="label">
+          <span>Kontrol sıklığı</span>
+          <small>Düşük değer daha hızlı tepki, biraz daha fazla CPU.</small>
+        </div>
+        <div class="control">
+          <input type="range" min="150" max="1500" step="50" data-path="capture.pollInterval" data-suffix=" ms" />
+          <output></output>
+        </div>
+      </div>
+      <div class="row">
+        <div class="label">
+          <span>Klasörleri izle</span>
+          <small>Win+PrtSc ile diske kaydedilen görüntüler.</small>
+        </div>
+        <label class="switch"><input type="checkbox" data-path="capture.watchFolders" /><i></i></label>
+      </div>
+      <div class="folders">
+        <div class="folder-list" id="folder-list"></div>
+        <button class="ghost" id="btn-add-folder">Klasör ekle</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Görünüm</h2>
+      <div class="row">
+        <div class="label">
+          <span>Konum</span>
+          <small>Akıllı: görüntünün alındığı yerin yanında belirir.</small>
+        </div>
+        <select data-path="preview.position">
+          <option value="smart">Akıllı (imlecin yanı)</option>
+          <option value="bottom-right">Sağ alt</option>
+          <option value="bottom-left">Sol alt</option>
+          <option value="top-right">Sağ üst</option>
+          <option value="top-left">Sol üst</option>
+        </select>
+      </div>
+      <div class="row slider">
+        <div class="label"><span>Kutucuk boyutu</span></div>
+        <div class="control">
+          <input type="range" min="140" max="380" step="10" data-path="preview.size" data-suffix=" px" />
+          <output></output>
+        </div>
+      </div>
+      <div class="row slider">
+        <div class="label"><span>Kenar boşluğu</span></div>
+        <div class="control">
+          <input type="range" min="0" max="120" step="4" data-path="preview.margin" data-suffix=" px" />
+          <output></output>
+        </div>
+      </div>
+      <div class="row slider">
+        <div class="label"><span>Aynı anda gösterilecek kutucuk</span></div>
+        <div class="control">
+          <input type="range" min="1" max="6" step="1" data-path="preview.maxStack" data-suffix=" adet" />
+          <output></output>
+        </div>
+      </div>
+      <div class="row slider">
+        <div class="label">
+          <span>Otomatik gizleme</span>
+          <small>0 = kendiliğinden kapanmasın.</small>
+        </div>
+        <div class="control">
+          <input type="range" min="0" max="60" step="1" data-path="preview.autoHideSeconds" data-suffix=" sn" />
+          <output></output>
+        </div>
+      </div>
+      <div class="row">
+        <div class="label"><span>Tema</span></div>
+        <select data-path="preview.theme">
+          <option value="dark">Koyu</option>
+          <option value="light">Açık</option>
+        </select>
+      </div>
+      <div class="row">
+        <div class="label">
+          <span>Araç çubuğu</span>
+          <small>Kutucuğun üstüne gelince kopyala / kaydet / aç düğmeleri.</small>
+        </div>
+        <label class="switch"><input type="checkbox" data-path="preview.showToolbar" /><i></i></label>
+      </div>
+    </section>
+
+    <section>
+      <h2>Animasyon</h2>
+      <div class="row">
+        <div class="label"><span>Animasyonlar</span></div>
+        <label class="switch"><input type="checkbox" data-path="animation.enabled" /><i></i></label>
+      </div>
+      <div class="row">
+        <div class="label"><span>Yumuşatma eğrisi</span></div>
+        <select data-path="animation.easing">
+          <option value="spring">Yaylı (ease-out-back)</option>
+          <option value="soft">Yumuşak (ease-out-expo)</option>
+          <option value="snappy">Keskin</option>
+          <option value="smooth">Akıcı</option>
+          <option value="inOut">Giriş-çıkış</option>
+          <option value="linear">Doğrusal</option>
+        </select>
+      </div>
+      <div class="row slider">
+        <div class="label"><span>Giriş süresi</span></div>
+        <div class="control">
+          <input type="range" min="80" max="1200" step="20" data-path="animation.enterDuration" data-suffix=" ms" />
+          <output></output>
+        </div>
+      </div>
+      <div class="row slider">
+        <div class="label"><span>Çıkış süresi</span></div>
+        <div class="control">
+          <input type="range" min="60" max="800" step="20" data-path="animation.exitDuration" data-suffix=" ms" />
+          <output></output>
+        </div>
+      </div>
+      <div class="row slider">
+        <div class="label"><span>Kayma mesafesi</span></div>
+        <div class="control">
+          <input type="range" min="0" max="180" step="4" data-path="animation.travel" data-suffix=" px" />
+          <output></output>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Depolama</h2>
+      <div class="row">
+        <div class="label">
+          <span>Dosya adı öneki</span>
+          <small>Sürükleyip bıraktığında karşı tarafta görünen ad.</small>
+        </div>
+        <input class="text" type="text" data-path="storage.filenamePrefix" spellcheck="false" />
+      </div>
+      <div class="row">
+        <div class="label">
+          <span>Geçici dosyaları sakla</span>
+          <small>Sadece uygulamanın kendi klasörü temizlenir.</small>
+        </div>
+        <select data-path="storage.keepDays" data-numeric>
+          <option value="1">1 gün</option>
+          <option value="3">3 gün</option>
+          <option value="7">7 gün</option>
+          <option value="30">30 gün</option>
+          <option value="0">Süresiz</option>
+        </select>
+      </div>
+      <div class="row">
+        <div class="label">
+          <span>Yakalama klasörü</span>
+          <small id="storage-stats">&nbsp;</small>
+        </div>
+        <div class="btn-group">
+          <button class="ghost" id="btn-open-captures">Aç</button>
+          <button class="ghost danger" id="btn-clear-captures">Temizle</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <button class="primary" id="btn-test">Önizlemeyi test et</button>
+    <button class="ghost" id="btn-reset">Varsayılanlar</button>
+    <span class="version" id="version"></span>
+  </footer>
+
+  <script src="settings.js"></script>
+</body>
+</html>
