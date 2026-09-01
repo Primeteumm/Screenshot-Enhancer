@@ -136,6 +136,26 @@
           <output></output>
         </div>
       </div>
+      <div class="row slider">
+        <div class="label">
+          <span>Kutucuk saydamlığı</span>
+          <small>Fare üstüne gelince geçici olarak tam opak olur.</small>
+        </div>
+        <div class="control">
+          <input type="range" min="35" max="100" step="5" data-path="preview.opacity" data-suffix=" %" />
+          <output></output>
+        </div>
+      </div>
+      <div class="row">
+        <div class="label">
+          <span>Hangi ekranda</span>
+          <small>Birden fazla monitör varsa.</small>
+        </div>
+        <select data-path="preview.display" id="display-select">
+          <option value="capture">Görüntünün alındığı ekran</option>
+          <option value="primary">Birincil ekran</option>
+        </select>
+      </div>
       <div class="row">
         <div class="label"><span>Tema</span></div>
         <select data-path="preview.theme">
@@ -149,6 +169,49 @@
           <small>Kutucuğun üstüne gelince kopyala / kaydet / aç düğmeleri.</small>
         </div>
         <label class="switch"><input type="checkbox" data-path="preview.showToolbar" /><i></i></label>
+      </div>
+    </section>
+
+    <section>
+      <h2>Kısayollar</h2>
+      <div class="row">
+        <div class="label">
+          <span>Global kısayollar</span>
+          <small id="shortcut-warning">Uygulama arka plandayken de çalışır.</small>
+        </div>
+        <label class="switch"><input type="checkbox" data-path="shortcuts.enabled" /><i></i></label>
+      </div>
+      <div class="row">
+        <div class="label">
+          <span>Son görüntüyü tekrar göster</span>
+          <small>Kutucuk kaybolduysa geri çağırır.</small>
+        </div>
+        <button class="hotkey" data-hotkey="shortcuts.showLast"></button>
+      </div>
+      <div class="row">
+        <div class="label">
+          <span>Yakalamayı duraklat / sürdür</span>
+          <small>Sunum ya da oyun sırasında.</small>
+        </div>
+        <button class="hotkey" data-hotkey="shortcuts.togglePause"></button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Ses</h2>
+      <div class="row">
+        <div class="label">
+          <span>Yakalama sesi</span>
+          <small>Kutucuk belirdiğinde kısa bir deklanşör sesi.</small>
+        </div>
+        <label class="switch"><input type="checkbox" data-path="sound.enabled" /><i></i></label>
+      </div>
+      <div class="row slider">
+        <div class="label"><span>Ses düzeyi</span></div>
+        <div class="control">
+          <input type="range" min="0" max="100" step="5" data-path="sound.volume" data-suffix=" %" />
+          <output></output>
+        </div>
       </div>
     </section>
 

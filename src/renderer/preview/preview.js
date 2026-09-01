@@ -16,8 +16,13 @@ const ICONS = {
   reveal: '<svg viewBox="0 0 24 24"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h4l2 2.5h7A1.5 1.5 0 0 1 19 10v7a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 3 17z"/></svg>',
   pin: '<svg viewBox="0 0 24 24"><path d="M15 3l6 6-3 1-4.5 4.5L13 19l-8-8 4.5-.5L14 6z"/><path d="M9 15l-4 4"/></svg>',
   close: '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>',
-  check: '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg>'
+  check: '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg>',
+  ocr: '<svg viewBox="0 0 24 24"><path d="M4 8V5h5"/><path d="M20 8V5h-5"/><path d="M4 16v3h5"/><path d="M20 16v3h-5"/><path d="M8 12h8"/><path d="M8 15h5"/></svg>',
+  select: '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg>'
 }
+
+// Uzun suren islemlerde once bu mesaj gosterilir.
+const PENDING = { ocr: 'Metin okunuyor...' }
 
 let layout = {
   align: 'right',
@@ -29,6 +34,8 @@ let layout = {
   travel: 56,
   theme: 'dark',
   showToolbar: true,
+  opacity: 1,
+  sound: { enabled: false, volume: 40 },
   autoHideSeconds: 9,
   animation: { enabled: true, enterDuration: 420, exitDuration: 220, easing: 'spring', travel: 56 }
 }
@@ -58,24 +65,27 @@ function shiftX() {
   return layout.align === 'left' ? -layout.travel : layout.travel
 }
 
+// Animasyonun son karesi CSS'teki hedef opakligi ile ayni olmali; aksi halde
+// animasyon bitince kart bir anda parlar/soner.
 function enterFrames() {
+  const end = layout.opacity == null ? 1 : layout.opacity
   switch (layout.animation.type) {
     case 'fade':
-      return [{ opacity: 0 }, { opacity: 1 }]
+      return [{ opacity: 0 }, { opacity: end }]
     case 'pop':
       return [
         { transform: 'scale(0.72)', opacity: 0 },
-        { transform: 'scale(1)', opacity: 1 }
+        { transform: 'scale(1)', opacity: end }
       ]
     case 'side':
       return [
         { transform: 'translateX(' + shiftX() + 'px) scale(0.94)', opacity: 0 },
-        { transform: 'translateX(0) scale(1)', opacity: 1 }
+        { transform: 'translateX(0) scale(1)', opacity: end }
       ]
     default:
       return [
         { transform: 'translateY(' + shiftY() + 'px) scale(0.9)', opacity: 0 },
-        { transform: 'translateY(0) scale(1)', opacity: 1 }
+        { transform: 'translateY(0) scale(1)', opacity: end }
       ]
   }
 }
@@ -83,20 +93,17 @@ function enterFrames() {
 function exitFrames() {
   switch (layout.animation.type) {
     case 'fade':
-      return [{ opacity: 1 }, { opacity: 0 }]
+      return [{}, { opacity: 0 }]
     case 'pop':
-      return [
-        { transform: 'scale(1)', opacity: 1 },
-        { transform: 'scale(0.82)', opacity: 0 }
-      ]
+      return [{ transform: 'scale(1)' }, { transform: 'scale(0.82)', opacity: 0 }]
     case 'side':
       return [
-        { transform: 'translateX(0) scale(1)', opacity: 1 },
+        { transform: 'translateX(0) scale(1)' },
         { transform: 'translateX(' + shiftX() * 0.5 + 'px) scale(0.94)', opacity: 0 }
       ]
     default:
       return [
-        { transform: 'translateY(0) scale(1)', opacity: 1 },
+        { transform: 'translateY(0) scale(1)' },
         { transform: 'translateY(' + shiftY() * 0.4 + 'px) scale(0.92)', opacity: 0 }
       ]
   }
@@ -128,6 +135,7 @@ function applyLayout(next) {
   root.setProperty('--pad', layout.pad + 'px')
   root.setProperty('--travel', layout.travel + 'px')
   root.setProperty('--offset', (layout.offset || 0) + 'px')
+  root.setProperty('--card-opacity', String(layout.opacity == null ? 1 : layout.opacity))
   stack.classList.toggle('up', layout.direction === 'up')
   stack.classList.toggle('down', layout.direction !== 'up')
   document.body.classList.toggle('light', layout.theme === 'light')
@@ -158,12 +166,14 @@ function buildCard(record) {
   overlay.innerHTML =
     '<div class="scrim"></div>' +
     '<div class="grip" title="Pencereyi tasi"><i></i></div>' +
+    '<button class="select" title="Birlikte sürüklemek için seç" data-act="select" draggable="false">' + ICONS.select + '</button>' +
     '<button class="close" title="Kapat" data-act="close" draggable="false">' + ICONS.close + '</button>' +
     (layout.showToolbar
       ? '<div class="toolbar">' +
         '<button data-act="copy" title="Panoya kopyala" draggable="false">' + ICONS.copy + '</button>' +
         '<button data-act="save" title="Farkli kaydet" draggable="false">' + ICONS.save + '</button>' +
         '<button data-act="open" title="Ac" draggable="false">' + ICONS.open + '</button>' +
+        '<button data-act="ocr" title="Metni panoya kopyala" draggable="false">' + ICONS.ocr + '</button>' +
         '<button data-act="reveal" title="Klasorde goster" draggable="false">' + ICONS.reveal + '</button>' +
         '<button data-act="pin" title="Sabitle" draggable="false">' + ICONS.pin + '</button>' +
         '</div>'
@@ -202,11 +212,16 @@ function buildCard(record) {
     // HTML5 surukleme yerine Electron'un yerel dosya suruklemesi devreye girer,
     // boylece WhatsApp / tarayici yukleme alanlari dosyayi dogrudan alir.
     event.preventDefault()
+    // Secili kartlar varsa ve bu kart da seciliyse hepsi birlikte gider.
+    const selected = [...stack.children].filter(other => other._selected)
+    const group = card._selected && selected.length > 1 ? selected : [card]
     // Surukleme boyunca sayac duraklar; imlec karttan ayrildigi icin "hot"
     // durumu dusse bile geri baslamamali, yoksa kart elinizdeyken kaybolur.
-    card._dragging = true
-    if (card._timer) card._timer.pause()
-    window.preview.startDrag(record.id)
+    for (const item of group) {
+      item._dragging = true
+      if (item._timer) item._timer.pause()
+    }
+    window.preview.startDrag(group.map(item => item.dataset.id))
   })
 
   card.addEventListener('dblclick', () => run(card, record.id, 'open'))
@@ -217,6 +232,12 @@ function buildCard(record) {
     event.stopPropagation()
     const act = button.dataset.act
     if (act === 'close') return dismiss(card)
+    if (act === 'select') {
+      card._selected = !card._selected
+      card.classList.toggle('selected', card._selected)
+      publishHitboxes()
+      return
+    }
     if (act === 'pin') {
       card._pinned = !card._pinned
       button.classList.toggle('pinned', card._pinned)
@@ -238,6 +259,7 @@ async function run(card, id, action) {
   // karttan ayrildigi icin sayac islerdi ve kart elinizin altindan kaybolurdu.
   card._busy = true
   if (card._timer) card._timer.pause()
+  if (PENDING[action]) showToast(card, PENDING[action], true)
   let result = null
   try {
     result = await window.preview.action(id, action)
@@ -248,11 +270,12 @@ async function run(card, id, action) {
   if (result && result.message) showToast(card, result.message)
 }
 
-function showToast(card, message) {
+function showToast(card, message, pending = false) {
   const toast = card.querySelector('.toast')
   if (!toast) return
   toast.textContent = ''
-  toast.insertAdjacentHTML('afterbegin', ICONS.check)
+  toast.classList.toggle('pending', pending)
+  if (!pending) toast.insertAdjacentHTML('afterbegin', ICONS.check)
   const label = document.createElement('span')
   label.textContent = message
   toast.appendChild(label)
@@ -297,6 +320,56 @@ function dismiss(card, immediate = false) {
   })
   anim.onfinish = finish
   anim.oncancel = finish
+}
+
+/* ---------------- yakalama sesi ---------------- */
+
+// Dosya yerine Web Audio ile sentezleniyor: ne varlik ne de CSP izni gerekiyor.
+let audio = null
+
+function playShutter() {
+  const settings = layout.sound
+  if (!settings || !settings.enabled) return
+  const level = Math.min(100, Math.max(0, settings.volume)) / 100
+  if (!level) return
+  try {
+    if (!audio) audio = new AudioContext()
+    if (audio.state === 'suspended') audio.resume()
+    const now = audio.currentTime
+
+    // kisa gurultu patlamasi (deklansor)
+    const length = Math.floor(audio.sampleRate * 0.09)
+    const buffer = audio.createBuffer(1, length, audio.sampleRate)
+    const data = buffer.getChannelData(0)
+    for (let i = 0; i < length; i++) {
+      const t = i / length
+      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - t, 3)
+    }
+    const noise = audio.createBufferSource()
+    noise.buffer = buffer
+    const band = audio.createBiquadFilter()
+    band.type = 'bandpass'
+    band.frequency.value = 2400
+    band.Q.value = 0.9
+    const noiseGain = audio.createGain()
+    noiseGain.gain.value = level * 0.45
+    noise.connect(band).connect(noiseGain).connect(audio.destination)
+    noise.start(now)
+
+    // ustune inen kisa bir tik
+    const tone = audio.createOscillator()
+    tone.type = 'triangle'
+    tone.frequency.setValueAtTime(1150, now)
+    tone.frequency.exponentialRampToValueAtTime(320, now + 0.07)
+    const toneGain = audio.createGain()
+    toneGain.gain.setValueAtTime(level * 0.3, now)
+    toneGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.09)
+    tone.connect(toneGain).connect(audio.destination)
+    tone.start(now)
+    tone.stop(now + 0.1)
+  } catch {
+    /* ses cikmazsa akis bozulmasin */
+  }
 }
 
 /* ---------------- fare gecirgenligi ---------------- */
@@ -347,6 +420,7 @@ window.addEventListener('resize', () => schedulePublish(80))
 window.preview.onAdd(payload => {
   applyLayout(payload.layout)
   addCard(payload.record)
+  playShutter()
 })
 
 window.preview.onClear(() => {
@@ -365,11 +439,15 @@ window.preview.onHot(id => {
 })
 
 // Surukleme bittiginde otomatik gizleme sayaci kilitli kalmasin.
-window.preview.onDragEnd(id => {
-  const card = stack.querySelector('[data-id="' + id + '"]')
-  if (!card) return
-  card._dragging = false
-  if (card._timer && !card._pinned) card._timer.play()
+window.preview.onDragEnd(ids => {
+  for (const id of Array.isArray(ids) ? ids : [ids]) {
+    const card = stack.querySelector('[data-id="' + id + '"]')
+    if (!card) continue
+    card._dragging = false
+    card._selected = false
+    card.classList.remove('selected')
+    if (card._timer && !card._pinned) card._timer.play()
+  }
   schedulePublish(80)
 })
 

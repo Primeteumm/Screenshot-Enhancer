@@ -68,7 +68,9 @@ class PreviewManager {
         preload: path.join(__dirname, '..', 'preload', 'preview.js'),
         contextIsolation: true,
         nodeIntegration: false,
-        backgroundThrottling: false
+        backgroundThrottling: false,
+        // Yakalama sesi kullanici etkilesimi olmadan calabilsin.
+        autoplayPolicy: 'no-user-gesture-required'
       }
     })
 
@@ -211,12 +213,24 @@ class PreviewManager {
     }
   }
 
+  // Kutucugun hangi ekranda cikacagi. Belirli bir ekran secildiyse imlec baska
+  // ekranda olsa bile oraya konumlanir (kart zaten calisma alanina kirpiliyor).
+  targetDisplay(point) {
+    const pref = config.get().preview.display
+    if (pref === 'primary') return screen.getPrimaryDisplay()
+    if (pref && pref !== 'capture') {
+      const match = screen.getAllDisplays().find(d => String(d.id) === pref)
+      if (match) return match
+    }
+    return screen.getDisplayNearestPoint(point)
+  }
+
   // Kartin oturacagi noktadan pencere sinirlarini hesaplar.
   computeBounds(cursorPoint) {
     const preview = config.get().preview
     const m = this.metrics()
     const point = cursorPoint || screen.getCursorScreenPoint()
-    const display = screen.getDisplayNearestPoint(point)
+    const display = this.targetDisplay(point)
     const wa = display.workArea
     const margin = preview.margin
     // Kartin baglandigi kenar ile pencere kenari arasindaki mesafe: golge payi +
@@ -299,6 +313,8 @@ class PreviewManager {
       pad: m.pad,
       travel: m.travel,
       maxStack: cfg.preview.maxStack,
+      opacity: Math.min(100, Math.max(35, cfg.preview.opacity)) / 100,
+      sound: cfg.sound,
       theme: cfg.preview.theme,
       showToolbar: cfg.preview.showToolbar,
       autoHideSeconds: cfg.preview.autoHideSeconds,

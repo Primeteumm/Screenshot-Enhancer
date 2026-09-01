@@ -4,6 +4,7 @@
   --pad: 30px;
   --travel: 56px;
   --offset: 0px;
+  --card-opacity: 1;
   --radius: 14px;
 
   --surface: #191c25;
@@ -75,7 +76,20 @@ body {
   overflow: hidden;
   cursor: grab;
   flex: none;
+  opacity: var(--card-opacity);
+  transition: opacity 160ms ease, box-shadow 160ms ease;
   -webkit-user-drag: element;
+}
+
+/* Imlec ustundeyken tam opak olsun ki icerik net gorunsun. */
+.card.hot {
+  opacity: 1;
+}
+
+/* Birlikte suruklemek uzere secilen kartlar */
+.card.selected {
+  box-shadow: var(--shadow), 0 0 0 2px var(--accent);
+  opacity: 1;
 }
 
 .card:active {
@@ -165,16 +179,19 @@ body {
   right: 8px;
   bottom: 8px;
   display: flex;
-  gap: 4px;
+  gap: 3px;
+  /* Kucuk kutucuklarda dugmeler tasmasin, alt satira insin. */
+  flex-wrap: wrap;
   justify-content: center;
 }
 
 .toolbar button,
-.close {
+.close,
+.select {
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 9px;
   background: rgba(24, 27, 36, 0.82);
@@ -184,7 +201,8 @@ body {
 }
 
 .toolbar button:hover,
-.close:hover {
+.close:hover,
+.select:hover {
   background: var(--accent);
   border-color: transparent;
   transform: translateY(-1px);
@@ -195,13 +213,36 @@ body {
   border-color: transparent;
 }
 
-.close {
+.close,
+.select {
   position: absolute;
   top: 8px;
-  right: 8px;
   width: 26px;
   height: 26px;
   border-radius: 8px;
+}
+
+.close {
+  right: 8px;
+}
+
+.select {
+  left: 8px;
+}
+
+.select svg {
+  width: 13px;
+  height: 13px;
+  opacity: 0.65;
+}
+
+.card.selected .select {
+  background: var(--accent);
+  border-color: transparent;
+}
+
+.card.selected .select svg {
+  opacity: 1;
 }
 
 .close:hover {
@@ -269,6 +310,12 @@ svg {
   opacity: 0;
   transform: translate(-50%, -50%) scale(0.8);
   pointer-events: none;
+}
+
+/* uzun suren islemde onay isareti yok, sadece metin */
+.toast.pending {
+  padding: 7px 13px;
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .toast svg {

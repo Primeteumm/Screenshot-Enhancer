@@ -100,6 +100,20 @@ function renderFolders() {
   }
 }
 
+/* ---------------- ekran listesi ---------------- */
+
+// Bagli monitorler "Gorumtunun alindigi ekran" ve "Birincil ekran"
+// secenekleriyle ayni listeye eklenir.
+function renderDisplays(displays) {
+  const select = document.getElementById('display-select')
+  for (const display of displays || []) {
+    const option = document.createElement('option')
+    option.value = display.id
+    option.textContent = display.label
+    select.appendChild(option)
+  }
+}
+
 /* ---------------- 8 yonlu konum izgarasi ---------------- */
 
 const anchorGrid = document.getElementById('anchor-grid')
@@ -118,6 +132,88 @@ anchorGrid.addEventListener('click', event => {
   save({ preview: { anchor: button.dataset.anchor } })
 })
 
+/* ---------------- kisayol kaydedici ---------------- */
+
+const MODIFIER_CODES = ['ControlLeft', 'ControlRight', 'ShiftLeft', 'ShiftRight',
+  'AltLeft', 'AltRight', 'MetaLeft', 'MetaRight']
+
+// KeyboardEvent.code -> Electron accelerator parcasi
+function keyName(code) {
+  let match = /^Key([A-Z])$/.exec(code)
+  if (match) return match[1]
+  match = /^Digit(\d)$/.exec(code)
+  if (match) return match[1]
+  match = /^F(\d{1,2})$/.exec(code)
+  if (match) return 'F' + match[1]
+  match = /^Arrow(Up|Down|Left|Right)$/.exec(code)
+  if (match) return match[1]
+  const direct = {
+    Space: 'Space', Tab: 'Tab', Backquote: '`', Minus: '-', Equal: '=',
+    BracketLeft: '[', BracketRight: ']', Semicolon: ';',
+    Quote: "'", Comma: ',', Period: '.', Slash: '/',
+    Home: 'Home', End: 'End', PageUp: 'PageUp', PageDown: 'PageDown',
+    Insert: 'Insert', PrintScreen: 'PrintScreen'
+  }
+  return direct[code] || null
+}
+
+function prettyAccelerator(accelerator) {
+  if (!accelerator) return 'Atanmadı'
+  return accelerator.replace('CommandOrControl', 'Ctrl').replace(/\+/g, ' + ')
+}
+
+let recording = null
+
+function renderHotkeys() {
+  for (const button of document.querySelectorAll('[data-hotkey]')) {
+    if (recording === button) continue
+    button.textContent = prettyAccelerator(readPath(state, button.dataset.hotkey))
+    button.classList.remove('recording')
+  }
+}
+
+function stopRecording() {
+  recording = null
+  renderHotkeys()
+}
+
+for (const button of document.querySelectorAll('[data-hotkey]')) {
+  button.addEventListener('click', () => {
+    recording = button
+    button.textContent = 'Tuş kombinasyonuna bas...'
+    button.classList.add('recording')
+  })
+  button.addEventListener('blur', stopRecording)
+}
+
+window.addEventListener('keydown', event => {
+  if (!recording) return
+  event.preventDefault()
+  if (event.code === 'Escape') return stopRecording()
+  // Sil / geri: kisayolu kaldir
+  if (event.code === 'Backspace' || event.code === 'Delete') {
+    const path = recording.dataset.hotkey
+    stopRecording()
+    return save(patchFor(path, ''))
+  }
+  if (MODIFIER_CODES.includes(event.code)) return
+
+  const key = keyName(event.code)
+  if (!key) return
+  const parts = []
+  if (event.ctrlKey) parts.push('CommandOrControl')
+  if (event.altKey) parts.push('Alt')
+  if (event.shiftKey) parts.push('Shift')
+  if (event.metaKey) parts.push('Super')
+  // Degistirici olmadan global kisayol tum sistemde o tusu kapardi.
+  if (!parts.length) return
+  parts.push(key)
+
+  const path = recording.dataset.hotkey
+  stopRecording()
+  save(patchFor(path, parts.join('+')))
+}, true)
+
 /* ---------------- kaydetme ---------------- */
 
 async function save(patch) {
@@ -125,6 +221,7 @@ async function save(patch) {
   renderAll(state)
   renderFolders()
   renderAnchor()
+  renderHotkeys()
 }
 
 for (const control of controls) {
@@ -150,6 +247,7 @@ document.getElementById('btn-reset').addEventListener('click', async () => {
   renderAll(state)
   renderFolders()
   renderAnchor()
+  renderHotkeys()
 })
 
 document.getElementById('btn-add-folder').addEventListener('click', async () => {
@@ -178,15 +276,24 @@ window.api.onChanged(config => {
   renderAll(state)
   renderFolders()
   renderAnchor()
+  renderHotkeys()
 })
 
 window.api.get().then(payload => {
   state = payload.config
   autoFolders = payload.watchedFolders
+  renderDisplays(payload.displays)
   renderAll(state)
   renderFolders()
   renderAnchor()
+  renderHotkeys()
   showStats(payload.stats)
+  if (payload.shortcutErrors && payload.shortcutErrors.length) {
+    const warning = document.getElementById('shortcut-warning')
+    warning.textContent = 'Kaydedilemedi (başka uygulama kullanıyor): ' +
+      payload.shortcutErrors.map(prettyAccelerator).join(', ')
+    warning.classList.add('warn')
+  }
   document.getElementById('version').textContent = 'v' + payload.version
   if (!payload.packaged) {
     document.getElementById('autostart-note').textContent =

@@ -1,4 +1,5 @@
-const { app, ipcMain, dialog, shell, clipboard, nativeImage, screen } = require('electron')
+const { app, ipcMain, dialog, shell, clipboard, nativeImage, screen, globalShortcut } = require('electron')
+const { execFile } = require('child_process')
 const fs = require('fs')
 const path = require('path')
 
@@ -36,17 +37,18 @@ function main() {
     tray.create({
       quit: quitApp,
       testPreview: showTestPreview,
-      setCaptureEnabled: enabled => {
-        config.update({ capture: { watchClipboard: enabled, watchFolders: enabled } })
-      }
+      showLast: showLastCapture,
+      setPaused: paused => config.update({ capture: { paused } })
     })
 
     registerIpc()
     applyWatchers()
     applyLaunchAtLogin()
+    applyShortcuts()
     config.on('change', () => {
       applyWatchers()
       applyLaunchAtLogin()
+      applyShortcuts()
       previewManager.applyConfig()
       settingsWindow.broadcast('settings:changed', config.get())
     })
@@ -61,6 +63,7 @@ function quitApp() {
   global.__isQuitting = true
   clipboardWatcher.stop()
   folderWatcher.stop()
+  globalShortcut.unregisterAll()
   app.quit()
 }
 
@@ -70,7 +73,10 @@ function quitApp() {
 // son yakalamalar kisa sure hafizada tutulur.
 const recentCaptures = []
 
+let lastCapture = null
+
 function rememberCapture(record) {
+  lastCapture = record
   recentCaptures.push(record)
   const cutoff = Date.now() - 8000
   while (recentCaptures.length && recentCaptures[0].createdAt < cutoff) recentCaptures.shift()
@@ -96,15 +102,16 @@ function applyWatchers() {
     capture.watchClipboard,
     capture.pollInterval,
     capture.watchFolders,
-    capture.extraFolders
+    capture.extraFolders,
+    capture.paused
   ])
   if (signature === watcherState) return
   watcherState = signature
 
-  if (capture.watchClipboard) clipboardWatcher.start(capture.pollInterval)
+  if (capture.watchClipboard && !capture.paused) clipboardWatcher.start(capture.pollInterval)
   else clipboardWatcher.stop()
 
-  if (capture.watchFolders) folderWatcher.start(capture.extraFolders)
+  if (capture.watchFolders && !capture.paused) folderWatcher.start(capture.extraFolders)
   else folderWatcher.stop()
 }
 
@@ -157,6 +164,60 @@ function showTestPreview() {
   previewManager.add(record)
 }
 
+/* ---------------- global kisayollar ---------------- */
+
+// Kaydedilemeyen kisayollar (baska bir uygulama kapmis olabilir) ayar
+// penceresinde uyari olarak gosterilir.
+let shortcutErrors = []
+
+function showLastCapture() {
+  if (!store.revive(lastCapture)) return
+  lastCapture.cursorPoint = screen.getCursorScreenPoint()
+  previewManager.add(lastCapture)
+}
+
+function togglePause() {
+  config.update({ capture: { paused: !config.get().capture.paused } })
+}
+
+function applyShortcuts() {
+  globalShortcut.unregisterAll()
+  shortcutErrors = []
+  const shortcuts = config.get().shortcuts
+  if (!shortcuts.enabled) return
+
+  const bind = (accelerator, handler) => {
+    if (!accelerator) return
+    try {
+      if (!globalShortcut.register(accelerator, handler)) shortcutErrors.push(accelerator)
+    } catch {
+      shortcutErrors.push(accelerator)
+    }
+  }
+  bind(shortcuts.showLast, showLastCapture)
+  bind(shortcuts.togglePause, togglePause)
+}
+
+/* ---------------- OCR ---------------- */
+
+// Windows'un yerlesik OCR motoru PowerShell uzerinden cagriliyor; harici
+// bagimlilik ya da ag yok. Dil paketleri kullanicinin Windows ayarlarindan.
+function readTextFromImage(filePath) {
+  return new Promise(resolve => {
+    // Paketli surumde betik asar arsivinin icinde kalirsa PowerShell okuyamaz;
+    // electron-builder asarUnpack ile disari cikariyor.
+    const script = path
+      .join(__dirname, '..', '..', 'scripts', 'ocr.ps1')
+      .replace('app.asar' + path.sep, 'app.asar.unpacked' + path.sep)
+    execFile(
+      'powershell.exe',
+      ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', script, '-Path', filePath],
+      { timeout: 25000, maxBuffer: 4 * 1024 * 1024, windowsHide: true },
+      (error, stdout) => resolve(error ? null : String(stdout).trim())
+    )
+  })
+}
+
 /* ---------------- baslangicta calistir ---------------- */
 
 let lastLaunchAtLogin = null
@@ -178,6 +239,17 @@ function applyLaunchAtLogin() {
   }
 }
 
+/* ---------------- ekranlar ---------------- */
+
+function listDisplays() {
+  const primary = screen.getPrimaryDisplay().id
+  return screen.getAllDisplays().map((display, index) => ({
+    id: String(display.id),
+    label: 'Ekran ' + (index + 1) + ' - ' + display.size.width + 'x' + display.size.height +
+      (display.id === primary ? ' (birincil)' : '')
+  }))
+}
+
 /* ---------------- IPC ---------------- */
 
 function registerIpc() {
@@ -194,20 +266,28 @@ function registerIpc() {
     store.remove(id, false)
   })
 
-  ipcMain.on('preview:drag', (event, id) => {
-    const record = store.get(id)
-    if (!record || !fs.existsSync(record.filePath)) return
+  // ids: tek kart ya da secili kartlarin tamami
+  ipcMain.on('preview:drag', (event, ids) => {
+    const list = (Array.isArray(ids) ? ids : [ids])
+      .map(id => store.get(id))
+      .filter(record => record && fs.existsSync(record.filePath))
+    if (!list.length) return
+
     try {
-      const icon = nativeImage.createFromPath(record.filePath).resize({ width: 128, quality: 'good' })
+      const icon = nativeImage.createFromPath(list[0].filePath).resize({ width: 128, quality: 'good' })
       // Surukleme boyunca pencere etkilesime acik kalmali.
       previewManager.beginDrag()
       // startDrag, Windows surukleme dongusu bitene kadar geri donmez.
-      event.sender.startDrag({ file: record.filePath, icon })
+      event.sender.startDrag(
+        list.length > 1
+          ? { files: list.map(record => record.filePath), icon }
+          : { file: list[0].filePath, icon }
+      )
     } catch (err) {
       console.error('[drag]', err.message)
     }
     previewManager.endDrag()
-    event.sender.send('preview:dragend', id)
+    event.sender.send('preview:dragend', list.map(record => record.id))
   })
 
   ipcMain.handle('preview:action', async (event, payload) => {
@@ -230,6 +310,14 @@ function registerIpc() {
         shell.showItemInFolder(record.filePath)
         return { ok: true }
       }
+      case 'ocr': {
+        const text = await readTextFromImage(record.filePath)
+        if (text === null) return { ok: false, message: 'OCR kullanılamıyor' }
+        if (!text) return { ok: false, message: 'Metin bulunamadı' }
+        clipboardWatcher.suppress(null)
+        clipboard.writeText(text)
+        return { ok: true, message: 'Metin panoya kopyalandı' }
+      }
       case 'save': {
         const result = await dialog.showSaveDialog({
           title: 'Ekran görüntüsünü kaydet',
@@ -250,6 +338,8 @@ function registerIpc() {
     config: config.get(),
     watchedFolders: folderWatcher.folders.length ? folderWatcher.folders : folderWatcher.defaultFolders(),
     stats: store.stats(),
+    displays: listDisplays(),
+    shortcutErrors,
     packaged: app.isPackaged,
     version: app.getVersion()
   }))

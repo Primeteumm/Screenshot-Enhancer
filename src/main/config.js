@@ -16,7 +16,10 @@ const DEFAULTS = {
     clipboardMode: 'screenshots',
     pollInterval: 350,
     watchFolders: true,
-    extraFolders: []
+    extraFolders: [],
+    // Kisayolla ya da tepsiden gecici olarak durdurulur; izleyici ayarlarina
+    // dokunmadigi icin duraklatma kalkinca eski duruma donulur.
+    paused: false
   },
   preview: {
     // cursor -> ekran goruntusunun alindigi yerin yaninda
@@ -30,7 +33,12 @@ const DEFAULTS = {
     maxStack: 3,
     autoHideSeconds: 9,
     theme: 'dark',
-    showToolbar: true
+    showToolbar: true,
+    // yuzde: 35-100. Fare kartin uzerine gelince gecici olarak %100 olur.
+    opacity: 100,
+    // capture -> goruntunun alindigi ekran, primary -> birincil ekran,
+    // ya da belirli bir ekranin kimligi (metin olarak)
+    display: 'capture'
   },
   animation: {
     enabled: true,
@@ -40,6 +48,15 @@ const DEFAULTS = {
     exitDuration: 220,
     easing: 'spring',
     travel: 56
+  },
+  shortcuts: {
+    enabled: true,
+    showLast: 'CommandOrControl+Shift+V',
+    togglePause: 'CommandOrControl+Shift+P'
+  },
+  sound: {
+    enabled: false,
+    volume: 40 // yuzde
   },
   storage: {
     keepDays: 7,

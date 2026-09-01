@@ -21,9 +21,16 @@
   "build": {
     "appId": "com.enesaydin.screenshotenhancer",
     "productName": "Screenshot Enhancer",
-    "files": ["src/**/*", "assets/**/*", "package.json"],
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "scripts/ocr.ps1",
+      "package.json"
+    ],
     "win": {
-      "target": ["nsis"],
+      "target": [
+        "nsis"
+      ],
       "icon": "assets/icon.ico"
     },
     "nsis": {
@@ -31,6 +38,9 @@
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,
       "shortcutName": "Screenshot Enhancer"
-    }
+    },
+    "asarUnpack": [
+      "scripts/ocr.ps1"
+    ]
   }
 }

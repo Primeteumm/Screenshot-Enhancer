@@ -294,6 +294,36 @@ button.primary:hover {
   flex: none;
 }
 
+/* ---------- kisayol alani ---------- */
+button.hotkey {
+  flex: none;
+  min-width: 168px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--panel-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+
+button.hotkey:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+button.hotkey.recording {
+  border-color: var(--accent);
+  background: rgba(109, 140, 255, 0.16);
+  color: var(--accent);
+}
+
+.label small.warn {
+  color: #ffb454;
+}
+
 /* ---------- 8 yonlu konum izgarasi ---------- */
 .anchor-grid {
   display: grid;

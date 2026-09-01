@@ -96,6 +96,14 @@ class CaptureStore {
     return this.records.get(id)
   }
 
+  // Kart kapandiginda kayit haritadan dusuyor. Kisayolla tekrar gosterirken
+  // surukleme ve arac cubugu yeniden calissin diye geri konur.
+  revive(record) {
+    if (!record || !fs.existsSync(record.filePath)) return null
+    this.records.set(record.id, record)
+    return record
+  }
+
   // Pano yakalamasi ile ayni goruntunun diskteki gercek dosyasi bulunursa,
   // gecici kopyayi silip kaydi gercek dosyaya baglar.
   relink(record, filePath) {

@@ -29,10 +29,14 @@ function buildMenu(actions) {
     { label: 'Screenshot Enhancer', enabled: false },
     { type: 'separator' },
     {
-      label: 'Yakalama acik',
+      label: 'Yakalamayı duraklat',
       type: 'checkbox',
-      checked: cfg.capture.watchClipboard || cfg.capture.watchFolders,
-      click: menuItem => actions.setCaptureEnabled(menuItem.checked)
+      checked: cfg.capture.paused,
+      click: menuItem => actions.setPaused(menuItem.checked)
+    },
+    {
+      label: 'Son görüntüyü tekrar göster',
+      click: () => actions.showLast()
     },
     {
       label: 'Onizlemeyi test et',
@@ -50,15 +54,24 @@ function buildMenu(actions) {
   ])
 }
 
+function updateTooltip() {
+  if (!tray || tray.isDestroyed()) return
+  tray.setToolTip(config.get().capture.paused
+    ? 'Screenshot Enhancer - yakalama duraklatıldı'
+    : 'Screenshot Enhancer')
+}
+
 function refresh(actions) {
   if (!tray) return
   tray.setImage(trayImage())
   tray.setContextMenu(buildMenu(actions))
+  updateTooltip()
 }
 
 function create(actions) {
   tray = new Tray(trayImage())
   tray.setToolTip('Screenshot Enhancer')
+  updateTooltip()
   tray.setContextMenu(buildMenu(actions))
   tray.on('click', () => settingsWindow.show())
   tray.on('double-click', () => settingsWindow.show())
