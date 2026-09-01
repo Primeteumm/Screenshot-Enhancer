@@ -232,9 +232,30 @@ function applyShortcuts() {
 
 /* ---------------- OCR ---------------- */
 
-// Windows'un yerlesik OCR motoru PowerShell uzerinden cagriliyor; harici
-// bagimlilik ya da ag yok. Dil paketleri kullanicinin Windows ayarlarindan.
-function readTextFromImage(filePath) {
+// Windows OCR motorunun kabul ettigi en buyuk kenar.
+const OCR_MAX_EDGE = 10000
+// Buyutulmus goruntunun ust siniri: buyudukce hem PNG yazimi hem tanima yavaslar.
+const OCR_PIXEL_BUDGET = 8e6
+
+// Tanima dogrudan metnin piksel yuksekligine bagli. Ekrandaki 12-13 px'lik
+// yaziyi ham haliyle vermek hatali okumaya yol aciyor; buyutmek belirgin fark
+// yaratiyor (olculdu: 560x200 terminal metninde 1x %94, 4x %100). Renk ters
+// cevirme ayni testte 4x'in uzerine bir sey katmadi, o yuzden yapilmiyor.
+function prepareForOcr(image) {
+  const size = image.getSize()
+  if (!size.width || !size.height) return image
+  const byPixels = Math.sqrt(OCR_PIXEL_BUDGET / (size.width * size.height))
+  const byEdge = OCR_MAX_EDGE / Math.max(size.width, size.height)
+  const scale = Math.max(1, Math.min(4, byPixels, byEdge))
+  if (scale < 1.1) return image
+  return image.resize({
+    width: Math.round(size.width * scale),
+    height: Math.round(size.height * scale),
+    quality: 'best'
+  })
+}
+
+function runOcr(filePath) {
   return new Promise(resolve => {
     // Paketli surumde betik asar arsivinin icinde kalirsa PowerShell okuyamaz;
     // electron-builder asarUnpack ile disari cikariyor.
@@ -244,10 +265,35 @@ function readTextFromImage(filePath) {
     execFile(
       'powershell.exe',
       ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', script, '-Path', filePath],
-      { timeout: 25000, maxBuffer: 4 * 1024 * 1024, windowsHide: true },
+      { timeout: 40000, maxBuffer: 8 * 1024 * 1024, windowsHide: true },
       (error, stdout) => resolve(error ? null : String(stdout).trim())
     )
   })
+}
+
+async function readTextFromImage(filePath) {
+  let image
+  try {
+    image = nativeImage.createFromPath(filePath)
+  } catch {
+    return null
+  }
+  if (!image || image.isEmpty()) return null
+
+  const prepared = prepareForOcr(image)
+  if (prepared === image) return runOcr(filePath)
+
+  // Buyutulmus kopya gecici bir dosyaya yazilir; asil yakalama dosyasi
+  // hicbir zaman degistirilmez.
+  const temp = path.join(app.getPath('temp'), 'se-ocr-' + Date.now() + '.png')
+  try {
+    fs.writeFileSync(temp, prepared.toPNG())
+    return await runOcr(temp)
+  } catch {
+    return runOcr(filePath)
+  } finally {
+    try { fs.unlinkSync(temp) } catch { /* onemsiz */ }
+  }
 }
 
 /* ---------------- baslangicta calistir ---------------- */

@@ -29,6 +29,8 @@ Kutucuğun üstüne gelince kopyala / farklı kaydet / aç / **metni kopyala (OC
 
 **Metni kopyala (OCR)**, Windows'un yerleşik `Windows.Media.Ocr` motorunu PowerShell üzerinden çağırır (`scripts/ocr.ps1`): harici bağımlılık ya da ağ trafiği yok, diller Windows dil ayarlarından gelir.
 
+Tanıma doğrudan yazının piksel yüksekliğine bağlı olduğu için görüntü OCR'a verilmeden önce büyütülür. Ekrandaki 12-13 px'lik yazı ham hâliyle verildiğinde hatalı okunuyordu; ölçüm: 560x200 terminal metninde ham görüntü %94, 4 kat büyütülmüş görüntü %100 doğruluk. Ölçek 4 katla ve ~8 MP bütçesiyle sınırlanıyor (motorun kenar sınırı 10000 px), böylece büyük ekran görüntülerinde işlem yavaşlamıyor — uçtan uca ~1,2 saniye. Renk ters çevirme aynı testte büyütmenin üzerine bir katkı sağlamadığı için yapılmıyor. Büyütülmüş kopya geçici bir dosyaya yazılır; asıl yakalama dosyası hiç değişmez.
+
 **Global kısayollar** uygulama arka plandayken de çalışır: bölge seçerek yakala (`Ctrl+Shift+A`), tüm ekranı yakala (`Ctrl+Shift+F`), son görüntüyü tekrar göster (`Ctrl+Shift+V`) ve yakalamayı duraklat/sürdür (`Ctrl+Shift+P`). Ayarlardan kombinasyona basarak değiştirilir; `Backspace` kısayolu kaldırır. Başka bir uygulama kısayolu tutuyorsa ayarlarda uyarı görünür.
 
 **Yakalama sesi** dosya yerine Web Audio ile sentezlenir — ne ek varlık ne de CSP izni gerekir.
