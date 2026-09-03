@@ -37,7 +37,10 @@ function closeOverlay() {
 // CSS pikseli = DIP oldugu icin secim, olcek carpanıyla goruntu pikseline cevrilir.
 function selectRegion(display, image) {
   return new Promise(resolve => {
-    if (overlay) return resolve(null)
+    // Onceki secimden katman kaldiysa temizle. Eskiden burada resolve(null)
+    // ile cikiliyordu; bayat bir katman bolge yakalamayi kalici olarak
+    // devre disi birakabiliyordu.
+    if (overlay) closeOverlay()
     pending = resolve
 
     overlay = new BrowserWindow({
@@ -73,6 +76,18 @@ function selectRegion(display, image) {
         height: display.bounds.height
       })
     })
+
+    // Sayfa yuklenmezse region:ready hic gelmez ve katman gorunmez bir sekilde
+    // asili kalirdi; secim de hicbir zaman cozulmezdi.
+    setTimeout(() => {
+      if (!overlay || overlay.isDestroyed()) return
+      if (!overlay.isVisible()) {
+        const done = pending
+        pending = null
+        closeOverlay()
+        if (done) done(null)
+      }
+    }, 2500)
 
     overlay.on('closed', () => {
       overlay = null

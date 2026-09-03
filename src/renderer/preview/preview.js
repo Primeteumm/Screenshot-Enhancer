@@ -197,12 +197,19 @@ function buildCard(record) {
   }
 
   const grip = overlay.querySelector('.grip')
-  grip.addEventListener('mousedown', event => {
+  // Isaretci yakalamasi: pencere imlecin altindan kaydigi icin birakma olayi
+  // baska bir hedefe dusebiliyordu; yakalama pointerup'in her halukarda buraya
+  // gelmesini garantiler (bkz. endMove).
+  grip.addEventListener('pointerdown', event => {
     if (event.button !== 0) return
     event.preventDefault()
+    try { grip.setPointerCapture(event.pointerId) } catch { /* yakalama sart degil */ }
     if (card._timer) card._timer.pause()
     window.preview.moveStart()
   })
+  for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) {
+    grip.addEventListener(type, () => window.preview.moveEnd())
+  }
 
   card.addEventListener('dragstart', event => {
     if (event.target.closest('button') || event.target.closest('.grip')) {

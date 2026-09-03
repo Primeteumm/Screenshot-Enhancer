@@ -7,6 +7,11 @@ const GAP = 12 // kartlar arasi bosluk
 const DEBUG = Boolean(process.env.SE_DEBUG)
 const POINTER_INTERVAL = 24 // imlec yoklama araligi (ms)
 const HIT_INFLATE = 2 // kart kenarinda titremeyi onlemek icin pay
+// Ust siralamanin yeniden dayatilma araligi (ms). Bkz. raise().
+const RAISE_INTERVAL = 1000
+// Tutamacla tasima en fazla bu kadar surer; mouseup kacarsa pencere imlece
+// yapisik kalmasin diye emniyet freni.
+const MOVE_TIMEOUT = 20000
 
 // Sabit konum secenekleri: dikey x yatay
 const ANCHORS = {
@@ -39,6 +44,7 @@ class PreviewManager {
     this.pointerTimer = null
     this.dragUntil = 0
     this.moveOrigin = null
+    this.raisedAt = 0
   }
 
   /* ---------------- pencere ---------------- */
@@ -95,9 +101,39 @@ class PreviewManager {
       this.ready = false
       this.activeIds.clear()
       this.hitboxes = []
+      // Onbellege alinmis girdi durumu da sifirlanmali: yeni pencere
+      // setIgnoreMouseEvents(true) ile dogar, bayrak "etkilesimli" kalirsa
+      // setInteractive(true) erken donup pencere kalici olarak tiklama
+      // gecirgen kalirdi.
+      this.interactive = false
+      this.hotId = null
+      this.moveOrigin = null
+      this.dragUntil = 0
+      this.raisedAt = 0
     })
 
     return this.win
+  }
+
+  // Pencereyi ust siralamada tutar.
+  //
+  // Windows'ta "her zaman ustte" tek bir kuyruktur: baska bir topmost pencere
+  // one gectiginde (Discord/Razer bindirmesi, oyun katmani, uygulamanin kendi
+  // bolge secim katmani kapandiginda...) bu pencere onlarin altina duser.
+  // Kart gorunur kaldigi icin kullanici hala goruyor ama tiklamalar ustteki
+  // pencereye gidiyor: dugmeler de surukle-birak da olu gorunuyor (olculdu).
+  // Electron'un isAlwaysOnTop() bayragi bu durumda hala true dondugu icin
+  // durum sessizce bozuluyor; bu yuzden bayraga guvenmeden yeniden dayatiyoruz.
+  raise() {
+    const win = this.win
+    if (!win || win.isDestroyed() || !win.isVisible()) return
+    this.raisedAt = Date.now()
+    // Yalnizca moveTop() yetmiyor: bayrak zaten true oldugu icin Electron
+    // setAlwaysOnTop'u yok sayabiliyor. Kapatip acmak pencereyi "her zaman
+    // ustte" kumesinin en tepesine gercekten yeniden ekliyor.
+    win.setAlwaysOnTop(false)
+    win.setAlwaysOnTop(true, 'screen-saver')
+    win.moveTop()
   }
 
   /* ---------------- imlec takibi ---------------- */
@@ -131,7 +167,12 @@ class PreviewManager {
     // tekrar gecirgen yaparsak surukleme yarida kalir.
     if (Date.now() < this.dragUntil) return
 
+    // Kart ekranda oldugu surece ust siralamayi tazele.
+    if (this.activeIds.size && Date.now() - this.raisedAt > RAISE_INTERVAL) this.raise()
+
     if (this.moveOrigin) {
+      // mouseup da blur da kacarsa pencere imlece yapisik kalirdi.
+      if (Date.now() - this.moveOrigin.startedAt > MOVE_TIMEOUT) return this.endMove()
       const now = screen.getCursorScreenPoint()
       const origin = this.moveOrigin
       win.setBounds({
@@ -176,7 +217,7 @@ class PreviewManager {
   startMove() {
     const win = this.win
     if (!win || win.isDestroyed()) return
-    this.moveOrigin = { cursor: screen.getCursorScreenPoint(), bounds: win.getBounds() }
+    this.moveOrigin = { cursor: screen.getCursorScreenPoint(), bounds: win.getBounds(), startedAt: Date.now() }
   }
 
   endMove() {
@@ -349,10 +390,10 @@ class PreviewManager {
       this.send('preview:add', payload)
     }
 
-    if (!win.isVisible()) {
-      win.showInactive()
-      win.setAlwaysOnTop(true, 'screen-saver')
-    }
+    if (!win.isVisible()) win.showInactive()
+    // Her kartta yeniden dayat: pencere hic gizlenmedigi icin bunu yalnizca
+    // "gorunur degilse" yapmak, ilk karttan sonra bir daha calismamak demekti.
+    this.raise()
     this.startPointerTracking()
   }
 
