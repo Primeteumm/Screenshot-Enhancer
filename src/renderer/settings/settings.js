@@ -28,13 +28,21 @@ function valueOf(control) {
   return control.value
 }
 
+// Kaydiracin yanindaki deger etiketi. data-zero verilmisse 0 icin sayi yerine
+// o metin yazilir: "0 sn" kendiliginden kapanmayi anlatmiyordu.
+function paintSlider(control) {
+  const out = control.parentElement.querySelector('output')
+  if (!out) return
+  const zero = control.dataset.zero
+  out.textContent = zero && Number(control.value) === 0
+    ? zero
+    : control.value + (control.dataset.suffix || '')
+}
+
 function paint(control, value) {
   if (control.type === 'checkbox') control.checked = Boolean(value)
   else control.value = String(value)
-  if (control.type === 'range') {
-    const out = control.parentElement.querySelector('output')
-    if (out) out.textContent = control.value + (control.dataset.suffix || '')
-  }
+  if (control.type === 'range') paintSlider(control)
 }
 
 function renderAll(config) {
@@ -227,10 +235,7 @@ async function save(patch) {
 for (const control of controls) {
   const event = control.type === 'range' ? 'input' : 'change'
   control.addEventListener(event, () => {
-    if (control.type === 'range') {
-      const out = control.parentElement.querySelector('output')
-      if (out) out.textContent = control.value + (control.dataset.suffix || '')
-    }
+    if (control.type === 'range') paintSlider(control)
     if (applying) return
     save(patchFor(control.dataset.path, valueOf(control)))
   })
