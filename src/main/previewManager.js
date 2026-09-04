@@ -12,6 +12,9 @@ const RAISE_INTERVAL = 1000
 // Tutamacla tasima en fazla bu kadar surer; mouseup kacarsa pencere imlece
 // yapisik kalmasin diye emniyet freni.
 const MOVE_TIMEOUT = 20000
+// Suruklemede emniyet freni: startDrag bir sekilde geri donmezse pencere
+// sonsuza dek "surukleniyor" durumunda kalmasin.
+const DRAG_TIMEOUT = 120000
 
 // Sabit konum secenekleri: dikey x yatay
 const ANCHORS = {
@@ -45,6 +48,7 @@ class PreviewManager {
     this.dragUntil = 0
     this.moveOrigin = null
     this.raisedAt = 0
+    this.dragging = false
   }
 
   /* ---------------- pencere ---------------- */
@@ -164,8 +168,20 @@ class PreviewManager {
     const win = this.win
     if (!win || win.isDestroyed() || !win.isVisible()) return
     // Yerel surukleme sirasinda fareyi Windows yakalar; bu sirada pencereyi
-    // tekrar gecirgen yaparsak surukleme yarida kalir.
-    if (Date.now() < this.dragUntil) return
+    // tekrar gecirgen yapmak ya da ust siralamasini degistirmek suruklemeyi
+    // yarida keser.
+    //
+    // Burada sabit sureli bir koruma vardi ve yetmiyordu: startDrag ic ice bir
+    // Windows mesaj dongusu calistirdigi icin zamanlayicilar surukleme boyunca
+    // islemeye devam ediyor. Olculdu: sure dolar dolmaz pencere suruklemenin
+    // ortasinda setIgnoreMouseEvents(true) ile gecirgen yapiliyordu. Gercek bir
+    // surukleme (baska uygulamaya gecip hedefi bulmak) bundan hep uzun surer.
+    // Artik bayrak startDrag'in gercek suresi boyunca tutuluyor; sure yalnizca
+    // startDrag hic geri donmezse devreye giren emniyet freni.
+    if (this.dragging) {
+      if (Date.now() < this.dragUntil) return
+      this.dragging = false
+    }
 
     // Kart ekranda oldugu surece ust siralamayi tazele.
     if (this.activeIds.size && Date.now() - this.raisedAt > RAISE_INTERVAL) this.raise()
@@ -225,12 +241,17 @@ class PreviewManager {
   }
 
   beginDrag() {
-    this.dragUntil = Date.now() + 2000
+    this.dragging = true
+    this.dragUntil = Date.now() + DRAG_TIMEOUT
     this.setInteractive(true)
   }
 
   endDrag() {
+    this.dragging = false
     this.dragUntil = 0
+    // Birakma hedefi one gectigi icin kutucuk altta kalmis olabilir; bir
+    // sonraki turda hemen yeniden one alinsin.
+    this.raisedAt = 0
   }
 
   metrics() {
