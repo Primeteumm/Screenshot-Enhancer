@@ -105,6 +105,7 @@ class PreviewManager {
       this.ready = false
       this.activeIds.clear()
       this.hitboxes = []
+      this.queue.length = 0
       // Onbellege alinmis girdi durumu da sifirlanmali: yeni pencere
       // setIgnoreMouseEvents(true) ile dogar, bayrak "etkilesimli" kalirsa
       // setInteractive(true) erken donup pencere kalici olarak tiklama
@@ -117,6 +118,19 @@ class PreviewManager {
     })
 
     return this.win
+  }
+
+  // Bolge secim katmani kapandiktan sonra Windows bu pencereye fare girdisini
+  // vermiyor: imlecin altindaki pencere hala bu (WindowFromPoint dogruluyor),
+  // isabet testi calisiyor, setIgnoreMouseEvents(false) cagriliyor -- ama
+  // sayfaya tek bir mousedown bile ulasmiyor. Z-sirasi, focusable, bounds
+  // oynatma ve setIgnoreMouseEvents gecisleri denendi, hicbiri duzeltmedi
+  // (olculdu). Guvenilir tek cozum pencereyi bastan yaratmak; kartlar
+  // cagiran tarafta sessizce geri konuyor.
+  reset() {
+    const ids = [...this.activeIds]
+    if (this.win && !this.win.isDestroyed()) this.win.destroy()
+    return ids
   }
 
   // Pencereyi ust siralamada tutar.
@@ -390,7 +404,7 @@ class PreviewManager {
 
   /* ---------------- kayitlar ---------------- */
 
-  add(record) {
+  add(record, options) {
     const win = this.ensureWindow()
     const point = record.cursorPoint || screen.getCursorScreenPoint()
     const { bounds, layout, displayId } = this.computeBounds(point)
@@ -403,7 +417,12 @@ class PreviewManager {
     }
 
     this.activeIds.add(record.id)
-    const payload = { record: publicRecord(record), layout: this.layoutPayload(this.lastLayout || layout) }
+    const payload = {
+      record: publicRecord(record),
+      layout: this.layoutPayload(this.lastLayout || layout),
+      // Pencere yenilendikten sonra geri konan kartlar icin ses calinmaz.
+      silent: Boolean(options && options.silent)
+    }
 
     if (!this.ready) {
       this.queue.push(payload)

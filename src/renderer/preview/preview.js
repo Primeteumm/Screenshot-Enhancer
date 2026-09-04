@@ -381,12 +381,13 @@ window.preview.onLayout(payload => {
   schedulePublish(80)
 })
 
+
 window.addEventListener('resize', () => schedulePublish(80))
 
 window.preview.onAdd(payload => {
   applyLayout(payload.layout)
   addCard(payload.record)
-  playShutter()
+  if (!payload.silent) playShutter()
 })
 
 window.preview.onClear(() => {

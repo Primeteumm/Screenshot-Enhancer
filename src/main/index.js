@@ -189,11 +189,22 @@ function togglePause() {
 // kullanicinin acikca istedigi bu yakalama her zaman calisir.
 let capturing = false
 
+// Bolge secim katmani kapandiktan sonra onizleme penceresi fare girdisi
+// almiyor (bkz. previewManager.reset). Pencereyi yenileyip o sirada ekranda
+// duran kartlari sessizce geri koyuyoruz.
+function recyclePreview() {
+  for (const id of previewManager.reset()) {
+    const record = store.get(id)
+    if (record) previewManager.add(record, { silent: true })
+  }
+}
+
 async function takeCapture(mode) {
   if (capturing) return
   capturing = true
   try {
     const image = await capture.capture(mode)
+    if (mode === 'region') recyclePreview()
     if (!image || image.isEmpty()) return
     const record = store.saveImage(image, { source: 'capture' })
     // Windows'un kendi kisayollarindaki gibi pano da dolsun; kendi
