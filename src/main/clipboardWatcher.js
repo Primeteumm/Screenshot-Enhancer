@@ -63,7 +63,15 @@ class ClipboardWatcher extends EventEmitter {
 
     const current = usable ? signature(image) : null
     const previous = this.lastSignature
-    this.lastSignature = current
+    // Hatirlanan imza yalnizca okunabilir bir goruntu varken guncellenir.
+    //
+    // Eskiden kosulsuz atanıyordu ve kilit ekrani bunu bozuyordu: oturum
+    // kilitliyken pano okunamadigi icin imza null'a dusuyor, kilit acilinca
+    // panoda duran ayni ekran goruntusu "yeni" gorunup tekrar kart uretiyordu.
+    // Her kilit acilisinda bir kez daha (olculdu). Goruntu panodan gercekten
+    // kalktiginda imzayi tutmanin bir maliyeti yok: ayni kare yeniden
+    // kopyalanirsa imza esit cikar ve zaten tekrar uretilmezdi.
+    if (current) this.lastSignature = current
 
     // Ilk turda panoda ne varsa referans alinir, olay uretilmez.
     if (!this.primed) {

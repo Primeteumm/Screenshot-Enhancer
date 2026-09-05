@@ -1,6 +1,6 @@
 {
   "name": "screenshot-enhancer",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Ekran goruntusu alindiginda surukle-birak yapilabilen animasyonlu bir onizleme kutucugu gosteren tray uygulamasi.",
   "main": "src/main/index.js",
   "author": "Enes Aydin",
