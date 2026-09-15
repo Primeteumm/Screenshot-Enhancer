@@ -1,4 +1,4 @@
-const { app, ipcMain, dialog, shell, clipboard, nativeImage, screen, globalShortcut } = require('electron')
+const { app, ipcMain, dialog, shell, clipboard, nativeImage, screen, globalShortcut, powerMonitor } = require('electron')
 const { execFile } = require('child_process')
 const fs = require('fs')
 const path = require('path')
@@ -13,6 +13,10 @@ const tray = require('./tray')
 const capture = require('./capture')
 
 const ASSETS = path.join(__dirname, '..', '..', 'assets')
+// Kilit acildiktan sonra pencereyi yenilemeden once beklenen sure (ms):
+// Windows giris masaustunden kullanici masaustune gecisi bitirmeden yaratilan
+// pencere ayni bozuk girdi durumuna dusebilir.
+const UNLOCK_RECYCLE_DELAY = 1500
 
 app.setAppUserModelId('com.enesaydin.screenshotenhancer')
 global.__isQuitting = false
@@ -55,6 +59,15 @@ function main() {
       applyShortcuts()
       previewManager.applyConfig()
       settingsWindow.broadcast('settings:changed', config.get())
+    })
+
+    // Kilit ekranindan donuste onizleme penceresi fare girdisi almiyor:
+    // kartlar gorunuyor ama dugmeler ve surukle-birak olu, ancak uygulama
+    // yeniden baslatilinca duzeliyor. Bolge secim katmaninda olculen ayni
+    // Windows girdi bozulmasi (bkz. previewManager.reset); cozum de ayni.
+    powerMonitor.on('unlock-screen', () => {
+      if (process.env.SE_DEBUG) console.log('[kilit] unlock-screen')
+      setTimeout(recyclePreview, UNLOCK_RECYCLE_DELAY)
     })
 
     const startedHidden = process.argv.includes('--hidden') || app.getLoginItemSettings().wasOpenedAtLogin
@@ -193,6 +206,7 @@ let capturing = false
 // almiyor (bkz. previewManager.reset). Pencereyi yenileyip o sirada ekranda
 // duran kartlari sessizce geri koyuyoruz.
 function recyclePreview() {
+  if (process.env.SE_DEBUG) console.log('[kilit] onizleme penceresi yenileniyor')
   for (const id of previewManager.reset()) {
     const record = store.get(id)
     if (record) previewManager.add(record, { silent: true })
