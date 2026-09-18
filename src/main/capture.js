@@ -34,7 +34,7 @@ function closeOverlay() {
 }
 
 // Donmus ekran goruntusu uzerinde dikdortgen sectirir.
-// CSS pikseli = DIP oldugu icin secim, olcek carpanıyla goruntu pikseline cevrilir.
+// Secim ana surece gorunen alanin boyutuyla birlikte doner (bkz. capture).
 function selectRegion(display, image) {
   return new Promise(resolve => {
     // Onceki secimden katman kaldiysa temizle. Eskiden burada resolve(null)
@@ -65,6 +65,11 @@ function selectRegion(display, image) {
       }
     })
     overlay.setAlwaysOnTop(true, 'screen-saver')
+    // Windows, calisma alanindan buyuk yaratilan pencereyi calisma alanina
+    // kirpiyor: gorev cubugu disarida kaliyor, 1080 px'lik goruntu 1032 px'e
+    // sikisiyor ve secim asagi dogru artan bir hatayla yukari kayiyordu
+    // (olculdu). Sinirlar yaratildiktan sonra yeniden verilince kirpilmiyor.
+    overlay.setBounds(display.bounds)
     overlay.loadFile(path.join(__dirname, '..', 'renderer', 'region', 'index.html'))
 
     overlay.webContents.once('did-finish-load', () => {
@@ -126,13 +131,17 @@ async function capture(mode) {
   const selection = await selectRegion(display, image)
   if (!selection) return null
 
-  const scale = display.scaleFactor || 1
+  // Secim, katmanda gorunen alanin CSS pikseliyle gelir; goruntu o alana
+  // gerilerek cizildigi icin orantili cevirmek her zaman gorulenle ayni
+  // bolgeyi verir. Pencere boyutunun ekranla ayni oldugu varsayilmiyor.
   const size = image.getSize()
+  const sx = size.width / (selection.viewWidth || display.bounds.width)
+  const sy = size.height / (selection.viewHeight || display.bounds.height)
   const rect = {
-    x: Math.max(0, Math.round(selection.x * scale)),
-    y: Math.max(0, Math.round(selection.y * scale)),
-    width: Math.round(selection.width * scale),
-    height: Math.round(selection.height * scale)
+    x: Math.max(0, Math.round(selection.x * sx)),
+    y: Math.max(0, Math.round(selection.y * sy)),
+    width: Math.round(selection.width * sx),
+    height: Math.round(selection.height * sy)
   }
   rect.width = Math.min(rect.width, size.width - rect.x)
   rect.height = Math.min(rect.height, size.height - rect.y)

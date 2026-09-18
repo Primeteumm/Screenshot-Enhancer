@@ -54,7 +54,10 @@ document.addEventListener('mouseup', () => {
   const rect = rectFrom(origin, current)
   origin = null
   // Kazara tiklama secim sayilmasin.
-  window.region.done(rect.width >= 5 && rect.height >= 5 ? rect : null)
+  if (rect.width < 5 || rect.height < 5) return window.region.done(null)
+  // Goruntu pencereye gerilerek cizildigi icin secim, gorunen alanin
+  // boyutuyla birlikte gonderilir; ana surec goruntuye orantili cevirir.
+  window.region.done({ ...rect, viewWidth: window.innerWidth, viewHeight: window.innerHeight })
 })
 
 document.addEventListener('keydown', event => {
