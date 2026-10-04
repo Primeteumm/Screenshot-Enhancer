@@ -21,6 +21,17 @@ const UNLOCK_RECYCLE_DELAY = 1500
 app.setAppUserModelId('com.enesaydin.screenshotenhancer')
 global.__isQuitting = false
 
+// Chromium'un pencere ortulme takibi: pencerenin ustu tamamen baska bir
+// pencereyle kapandiginda (Win+Shift+S alinti katmani, tam ekran video/oyun,
+// uygulamanin kendi bolge secim katmani...) onizleme penceresini "gizli"
+// sayiyor ve ortu kalktiktan sonra bu tiklama gecirgen pencere icin durumu
+// geri almiyor. Kart son karesiyle ekranda kaliyor ama sayfaya tek bir fare
+// olayi ulasmiyor: dugmeler ve surukle-birak kalici olarak olu (olculdu: tam
+// ekran bir pencere 1.5 sn ortup kalkinca kart bir daha tiklanmiyor; bu
+// ozellik kapaliyken dort senaryonun dordu de tiklaniyor; sag-orta, imlec
+// yani ve sag-alt yerlesimlerde ayni). app hazir olmadan verilmeli.
+app.commandLine.appendSwitch('disable-features', 'CalculateNativeWinOcclusion')
+
 if (!app.requestSingleInstanceLock()) {
   app.quit()
 } else {
