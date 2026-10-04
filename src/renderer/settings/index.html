@@ -13,50 +13,61 @@
       <span>Screenshot Enhancer</span>
     </div>
     <div class="window-buttons">
-      <button id="btn-min" title="Simge durumuna küçült">&#8211;</button>
-      <button id="btn-close" title="Kapat (tepside çalışmaya devam eder)">&#10005;</button>
+      <button id="btn-min" title="Simge durumuna küçült" data-i18n-title="settings.minimize">&#8211;</button>
+      <button id="btn-close" title="Kapat (tepside çalışmaya devam eder)" data-i18n-title="settings.close">&#10005;</button>
     </div>
   </header>
 
   <main>
     <section>
-      <h2>Genel</h2>
+      <h2 data-i18n="section.general">Genel</h2>
       <div class="row">
         <div class="label">
-          <span>Windows açılışında başlat</span>
-          <small id="autostart-note">Uygulama tepside sessizce başlar.</small>
+          <span data-i18n="general.language">Dil</span>
+          <small data-i18n="general.language.note">Arayüz dili.</small>
+        </div>
+        <select data-path="general.language">
+          <option value="auto" data-i18n="general.language.auto">Sistem dili</option>
+          <option value="tr">Türkçe</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+      <div class="row">
+        <div class="label">
+          <span data-i18n="general.launchAtLogin">Windows açılışında başlat</span>
+          <small id="autostart-note" data-i18n="general.launchAtLogin.note">Uygulama tepside sessizce başlar.</small>
         </div>
         <label class="switch"><input type="checkbox" data-path="general.launchAtLogin" /><i></i></label>
       </div>
       <div class="row">
         <div class="label">
-          <span>Açılışta pencereyi gizle</span>
-          <small>Kapalıysa her açılışta bu pencere görünür.</small>
+          <span data-i18n="general.startHidden">Açılışta pencereyi gizle</span>
+          <small data-i18n="general.startHidden.note">Kapalıysa her açılışta bu pencere görünür.</small>
         </div>
         <label class="switch"><input type="checkbox" data-path="general.startHidden" /><i></i></label>
       </div>
     </section>
 
     <section>
-      <h2>Yakalama</h2>
+      <h2 data-i18n="section.capture">Yakalama</h2>
       <div class="row">
         <div class="label">
-          <span>Panoyu izle</span>
-          <small>PrtSc, Win+Shift+S, Alt+PrtSc ve ekran alıntısı araçları.</small>
+          <span data-i18n="capture.watchClipboard">Panoyu izle</span>
+          <small data-i18n="capture.watchClipboard.note">PrtSc, Win+Shift+S, Alt+PrtSc ve ekran alıntısı araçları.</small>
         </div>
         <label class="switch"><input type="checkbox" data-path="capture.watchClipboard" /><i></i></label>
       </div>
       <div class="row">
-        <div class="label"><span>Pano modu</span></div>
+        <div class="label"><span data-i18n="capture.clipboardMode">Pano modu</span></div>
         <select data-path="capture.clipboardMode">
-          <option value="screenshots">Sadece ekran görüntüleri</option>
-          <option value="allImages">Kopyalanan her görsel</option>
+          <option value="screenshots" data-i18n="capture.clipboardMode.screenshots">Sadece ekran görüntüleri</option>
+          <option value="allImages" data-i18n="capture.clipboardMode.allImages">Kopyalanan her görsel</option>
         </select>
       </div>
       <div class="row slider">
         <div class="label">
-          <span>Kontrol sıklığı</span>
-          <small>Düşük değer daha hızlı tepki, biraz daha fazla CPU.</small>
+          <span data-i18n="capture.pollInterval">Kontrol sıklığı</span>
+          <small data-i18n="capture.pollInterval.note">Düşük değer daha hızlı tepki, biraz daha fazla CPU.</small>
         </div>
         <div class="control">
           <input type="range" min="150" max="1500" step="50" data-path="capture.pollInterval" data-suffix=" ms" />
@@ -65,81 +76,81 @@
       </div>
       <div class="row">
         <div class="label">
-          <span>Klasörleri izle</span>
-          <small>Win+PrtSc ile diske kaydedilen görüntüler.</small>
+          <span data-i18n="capture.watchFolders">Klasörleri izle</span>
+          <small data-i18n="capture.watchFolders.note">Win+PrtSc ile diske kaydedilen görüntüler.</small>
         </div>
         <label class="switch"><input type="checkbox" data-path="capture.watchFolders" /><i></i></label>
       </div>
       <div class="folders">
         <div class="folder-list" id="folder-list"></div>
-        <button class="ghost" id="btn-add-folder">Klasör ekle</button>
+        <button class="ghost" id="btn-add-folder" data-i18n="capture.addFolder">Klasör ekle</button>
       </div>
     </section>
 
     <section>
-      <h2>Görünüm</h2>
+      <h2 data-i18n="section.appearance">Görünüm</h2>
       <div class="row">
         <div class="label">
-          <span>Nerede belirsin</span>
-          <small>"Alındığı yerde" = imlecin bittiği noktanın yanı.</small>
+          <span data-i18n="preview.placement">Nerede belirsin</span>
+          <small data-i18n="preview.placement.note">"Alındığı yerde" = imlecin bittiği noktanın yanı.</small>
         </div>
         <select data-path="preview.placement">
-          <option value="cursor">Alındığı yerde</option>
-          <option value="fixed">Sabit konumda</option>
+          <option value="cursor" data-i18n="preview.placement.cursor">Alındığı yerde</option>
+          <option value="fixed" data-i18n="preview.placement.fixed">Sabit konumda</option>
         </select>
       </div>
       <div class="row" id="anchor-row">
         <div class="label">
-          <span>Ekrandaki konum</span>
-          <small>Görüntünün alındığı ekranın seçilen köşesinde belirir.</small>
+          <span data-i18n="preview.anchor">Ekrandaki konum</span>
+          <small data-i18n="preview.anchor.note">Görüntünün alındığı ekranın seçilen köşesinde belirir.</small>
         </div>
         <div class="anchor-grid" id="anchor-grid">
-          <button type="button" data-anchor="top-left" title="Sol üst"></button>
-          <button type="button" data-anchor="top-center" title="Orta üst"></button>
-          <button type="button" data-anchor="top-right" title="Sağ üst"></button>
-          <button type="button" data-anchor="left" title="Sol"></button>
+          <button type="button" data-anchor="top-left" title="Sol üst" data-i18n-title="anchor.top-left"></button>
+          <button type="button" data-anchor="top-center" title="Orta üst" data-i18n-title="anchor.top-center"></button>
+          <button type="button" data-anchor="top-right" title="Sağ üst" data-i18n-title="anchor.top-right"></button>
+          <button type="button" data-anchor="left" title="Sol" data-i18n-title="anchor.left"></button>
           <span class="anchor-hub"></span>
-          <button type="button" data-anchor="right" title="Sağ"></button>
-          <button type="button" data-anchor="bottom-left" title="Sol alt"></button>
-          <button type="button" data-anchor="bottom-center" title="Orta alt"></button>
-          <button type="button" data-anchor="bottom-right" title="Sağ alt"></button>
+          <button type="button" data-anchor="right" title="Sağ" data-i18n-title="anchor.right"></button>
+          <button type="button" data-anchor="bottom-left" title="Sol alt" data-i18n-title="anchor.bottom-left"></button>
+          <button type="button" data-anchor="bottom-center" title="Orta alt" data-i18n-title="anchor.bottom-center"></button>
+          <button type="button" data-anchor="bottom-right" title="Sağ alt" data-i18n-title="anchor.bottom-right"></button>
         </div>
       </div>
       <div class="row slider">
-        <div class="label"><span>Kutucuk boyutu</span></div>
+        <div class="label"><span data-i18n="preview.size">Kutucuk boyutu</span></div>
         <div class="control">
           <input type="range" min="140" max="380" step="10" data-path="preview.size" data-suffix=" px" />
           <output></output>
         </div>
       </div>
       <div class="row slider">
-        <div class="label"><span>Kenar boşluğu</span></div>
+        <div class="label"><span data-i18n="preview.margin">Kenar boşluğu</span></div>
         <div class="control">
           <input type="range" min="0" max="120" step="4" data-path="preview.margin" data-suffix=" px" />
           <output></output>
         </div>
       </div>
       <div class="row slider">
-        <div class="label"><span>Aynı anda gösterilecek kutucuk</span></div>
+        <div class="label"><span data-i18n="preview.maxStack">Aynı anda gösterilecek kutucuk</span></div>
         <div class="control">
-          <input type="range" min="1" max="6" step="1" data-path="preview.maxStack" data-suffix=" adet" />
+          <input type="range" min="1" max="6" step="1" data-path="preview.maxStack" data-suffix=" adet" data-i18n-suffix="preview.maxStack.suffix" />
           <output></output>
         </div>
       </div>
       <div class="row slider">
         <div class="label">
-          <span>Ekranda kalma süresi</span>
-          <small>En sola çekerseniz kutucuk siz kapatana kadar durur. Fare üstündeyken sayaç durur; tek bir kutucuğu tutmak için üzerindeki raptiye düğmesini kullanın.</small>
+          <span data-i18n="preview.autoHide">Ekranda kalma süresi</span>
+          <small data-i18n="preview.autoHide.note">En sola çekerseniz kutucuk siz kapatana kadar durur. Fare üstündeyken sayaç durur; tek bir kutucuğu tutmak için üzerindeki raptiye düğmesini kullanın.</small>
         </div>
         <div class="control">
-          <input type="range" min="0" max="60" step="1" data-path="preview.autoHideSeconds" data-suffix=" sn" data-zero="Kapatana kadar" />
+          <input type="range" min="0" max="60" step="1" data-path="preview.autoHideSeconds" data-suffix=" sn" data-i18n-suffix="preview.autoHide.suffix" data-zero="Kapatana kadar" data-i18n-zero="preview.autoHide.zero" />
           <output></output>
         </div>
       </div>
       <div class="row slider">
         <div class="label">
-          <span>Kutucuk saydamlığı</span>
-          <small>Fare üstüne gelince geçici olarak tam opak olur.</small>
+          <span data-i18n="preview.opacity">Kutucuk saydamlığı</span>
+          <small data-i18n="preview.opacity.note">Fare üstüne gelince geçici olarak tam opak olur.</small>
         </div>
         <div class="control">
           <input type="range" min="35" max="100" step="5" data-path="preview.opacity" data-suffix=" %" />
@@ -148,80 +159,80 @@
       </div>
       <div class="row">
         <div class="label">
-          <span>Hangi ekranda</span>
-          <small>Birden fazla monitör varsa.</small>
+          <span data-i18n="preview.display">Hangi ekranda</span>
+          <small data-i18n="preview.display.note">Birden fazla monitör varsa.</small>
         </div>
         <select data-path="preview.display" id="display-select">
-          <option value="capture">Görüntünün alındığı ekran</option>
-          <option value="primary">Birincil ekran</option>
+          <option value="capture" data-i18n="preview.display.capture">Görüntünün alındığı ekran</option>
+          <option value="primary" data-i18n="preview.display.primary">Birincil ekran</option>
         </select>
       </div>
       <div class="row">
-        <div class="label"><span>Tema</span></div>
+        <div class="label"><span data-i18n="preview.theme">Tema</span></div>
         <select data-path="preview.theme">
-          <option value="dark">Koyu</option>
-          <option value="light">Açık</option>
+          <option value="dark" data-i18n="preview.theme.dark">Koyu</option>
+          <option value="light" data-i18n="preview.theme.light">Açık</option>
         </select>
       </div>
       <div class="row">
         <div class="label">
-          <span>Araç çubuğu</span>
-          <small>Kutucuğun üstüne gelince kopyala / kaydet / aç düğmeleri.</small>
+          <span data-i18n="preview.toolbar">Araç çubuğu</span>
+          <small data-i18n="preview.toolbar.note">Kutucuğun üstüne gelince kopyala / kaydet / aç düğmeleri.</small>
         </div>
         <label class="switch"><input type="checkbox" data-path="preview.showToolbar" /><i></i></label>
       </div>
     </section>
 
     <section>
-      <h2>Kısayollar</h2>
+      <h2 data-i18n="section.shortcuts">Kısayollar</h2>
       <div class="row">
         <div class="label">
-          <span>Global kısayollar</span>
-          <small id="shortcut-warning">Uygulama arka plandayken de çalışır.</small>
+          <span data-i18n="shortcuts.enabled">Global kısayollar</span>
+          <small id="shortcut-warning" data-i18n="shortcuts.enabled.note">Uygulama arka plandayken de çalışır.</small>
         </div>
         <label class="switch"><input type="checkbox" data-path="shortcuts.enabled" /><i></i></label>
       </div>
       <div class="row">
         <div class="label">
-          <span>Bölge seçerek yakala</span>
-          <small>Ekranı dondurup alan seçtirir; sonuç doğrudan kutucuk olur.</small>
+          <span data-i18n="shortcuts.captureRegion">Bölge seçerek yakala</span>
+          <small data-i18n="shortcuts.captureRegion.note">Ekranı dondurup alan seçtirir; sonuç doğrudan kutucuk olur.</small>
         </div>
         <button class="hotkey" data-hotkey="shortcuts.captureRegion"></button>
       </div>
       <div class="row">
         <div class="label">
-          <span>Tüm ekranı yakala</span>
-          <small>İmlecin bulunduğu ekranın tamamı.</small>
+          <span data-i18n="shortcuts.captureScreen">Tüm ekranı yakala</span>
+          <small data-i18n="shortcuts.captureScreen.note">İmlecin bulunduğu ekranın tamamı.</small>
         </div>
         <button class="hotkey" data-hotkey="shortcuts.captureScreen"></button>
       </div>
       <div class="row">
         <div class="label">
-          <span>Son görüntüyü tekrar göster</span>
-          <small>Kutucuk kaybolduysa geri çağırır.</small>
+          <span data-i18n="shortcuts.showLast">Son görüntüyü tekrar göster</span>
+          <small data-i18n="shortcuts.showLast.note">Kutucuk kaybolduysa geri çağırır.</small>
         </div>
         <button class="hotkey" data-hotkey="shortcuts.showLast"></button>
       </div>
       <div class="row">
         <div class="label">
-          <span>Yakalamayı duraklat / sürdür</span>
-          <small>Sunum ya da oyun sırasında.</small>
+          <span data-i18n="shortcuts.togglePause">Yakalamayı duraklat / sürdür</span>
+          <small data-i18n="shortcuts.togglePause.note">Sunum ya da oyun sırasında.</small>
         </div>
         <button class="hotkey" data-hotkey="shortcuts.togglePause"></button>
       </div>
     </section>
 
     <section>
-      <h2>Ses</h2>
+      <h2 data-i18n="section.sound">Ses</h2>
       <div class="row">
         <div class="label">
-          <span>Yakalama sesi</span>
-          <small>Kutucuk belirdiğinde kısa bir deklanşör sesi.</small>
+          <span data-i18n="sound.enabled">Yakalama sesi</span>
+          <small data-i18n="sound.enabled.note">Kutucuk belirdiğinde kısa bir deklanşör sesi.</small>
         </div>
         <label class="switch"><input type="checkbox" data-path="sound.enabled" /><i></i></label>
       </div>
       <div class="row slider">
-        <div class="label"><span>Ses düzeyi</span></div>
+        <div class="label"><span data-i18n="sound.volume">Ses düzeyi</span></div>
         <div class="control">
           <input type="range" min="0" max="100" step="5" data-path="sound.volume" data-suffix=" %" />
           <output></output>
@@ -229,58 +240,58 @@
       </div>
       <div class="row">
         <div class="label">
-          <span>Sesi dinle</span>
-          <small>Ekran görüntüsü almadan denemek için.</small>
+          <span data-i18n="sound.listen">Sesi dinle</span>
+          <small data-i18n="sound.listen.note">Ekran görüntüsü almadan denemek için.</small>
         </div>
-        <button class="ghost" id="btn-sound">Çal</button>
+        <button class="ghost" id="btn-sound" data-i18n="sound.play">Çal</button>
       </div>
     </section>
 
     <section>
-      <h2>Animasyon</h2>
+      <h2 data-i18n="section.animation">Animasyon</h2>
       <div class="row">
-        <div class="label"><span>Animasyonlar</span></div>
+        <div class="label"><span data-i18n="animation.enabled">Animasyonlar</span></div>
         <label class="switch"><input type="checkbox" data-path="animation.enabled" /><i></i></label>
       </div>
       <div class="row">
         <div class="label">
-          <span>Animasyon türü</span>
-          <small>Kutucuğun ekrana geliş biçimi.</small>
+          <span data-i18n="animation.type">Animasyon türü</span>
+          <small data-i18n="animation.type.note">Kutucuğun ekrana geliş biçimi.</small>
         </div>
         <select data-path="animation.type">
-          <option value="slide">Kayarak</option>
-          <option value="side">Yandan kayarak</option>
-          <option value="pop">Büyüyerek</option>
-          <option value="fade">Soluklaşarak</option>
+          <option value="slide" data-i18n="animation.type.slide">Kayarak</option>
+          <option value="side" data-i18n="animation.type.side">Yandan kayarak</option>
+          <option value="pop" data-i18n="animation.type.pop">Büyüyerek</option>
+          <option value="fade" data-i18n="animation.type.fade">Soluklaşarak</option>
         </select>
       </div>
       <div class="row">
-        <div class="label"><span>Yumuşatma eğrisi</span></div>
+        <div class="label"><span data-i18n="animation.easing">Yumuşatma eğrisi</span></div>
         <select data-path="animation.easing">
-          <option value="spring">Yaylı (ease-out-back)</option>
-          <option value="soft">Yumuşak (ease-out-expo)</option>
-          <option value="snappy">Keskin</option>
-          <option value="smooth">Akıcı</option>
-          <option value="inOut">Giriş-çıkış</option>
-          <option value="linear">Doğrusal</option>
+          <option value="spring" data-i18n="animation.easing.spring">Yaylı (ease-out-back)</option>
+          <option value="soft" data-i18n="animation.easing.soft">Yumuşak (ease-out-expo)</option>
+          <option value="snappy" data-i18n="animation.easing.snappy">Keskin</option>
+          <option value="smooth" data-i18n="animation.easing.smooth">Akıcı</option>
+          <option value="inOut" data-i18n="animation.easing.inOut">Giriş-çıkış</option>
+          <option value="linear" data-i18n="animation.easing.linear">Doğrusal</option>
         </select>
       </div>
       <div class="row slider">
-        <div class="label"><span>Giriş süresi</span></div>
+        <div class="label"><span data-i18n="animation.enterDuration">Giriş süresi</span></div>
         <div class="control">
           <input type="range" min="80" max="1200" step="20" data-path="animation.enterDuration" data-suffix=" ms" />
           <output></output>
         </div>
       </div>
       <div class="row slider">
-        <div class="label"><span>Çıkış süresi</span></div>
+        <div class="label"><span data-i18n="animation.exitDuration">Çıkış süresi</span></div>
         <div class="control">
           <input type="range" min="60" max="800" step="20" data-path="animation.exitDuration" data-suffix=" ms" />
           <output></output>
         </div>
       </div>
       <div class="row slider">
-        <div class="label"><span>Kayma mesafesi</span></div>
+        <div class="label"><span data-i18n="animation.travel">Kayma mesafesi</span></div>
         <div class="control">
           <input type="range" min="0" max="180" step="4" data-path="animation.travel" data-suffix=" px" />
           <output></output>
@@ -289,46 +300,47 @@
     </section>
 
     <section>
-      <h2>Depolama</h2>
+      <h2 data-i18n="section.storage">Depolama</h2>
       <div class="row">
         <div class="label">
-          <span>Dosya adı öneki</span>
-          <small>Sürükleyip bıraktığında karşı tarafta görünen ad.</small>
+          <span data-i18n="storage.prefix">Dosya adı öneki</span>
+          <small data-i18n="storage.prefix.note">Sürükleyip bıraktığında karşı tarafta görünen ad.</small>
         </div>
         <input class="text" type="text" data-path="storage.filenamePrefix" spellcheck="false" />
       </div>
       <div class="row">
         <div class="label">
-          <span>Geçici dosyaları sakla</span>
-          <small>Sadece uygulamanın kendi klasörü temizlenir.</small>
+          <span data-i18n="storage.keepDays">Geçici dosyaları sakla</span>
+          <small data-i18n="storage.keepDays.note">Sadece uygulamanın kendi klasörü temizlenir.</small>
         </div>
         <select data-path="storage.keepDays" data-numeric>
-          <option value="1">1 gün</option>
-          <option value="3">3 gün</option>
-          <option value="7">7 gün</option>
-          <option value="30">30 gün</option>
-          <option value="0">Süresiz</option>
+          <option value="1" data-i18n="storage.keep.1">1 gün</option>
+          <option value="3" data-i18n="storage.keep.3">3 gün</option>
+          <option value="7" data-i18n="storage.keep.7">7 gün</option>
+          <option value="30" data-i18n="storage.keep.30">30 gün</option>
+          <option value="0" data-i18n="storage.keep.0">Süresiz</option>
         </select>
       </div>
       <div class="row">
         <div class="label">
-          <span>Yakalama klasörü</span>
+          <span data-i18n="storage.folder">Yakalama klasörü</span>
           <small id="storage-stats">&nbsp;</small>
         </div>
         <div class="btn-group">
-          <button class="ghost" id="btn-open-captures">Aç</button>
-          <button class="ghost danger" id="btn-clear-captures">Temizle</button>
+          <button class="ghost" id="btn-open-captures" data-i18n="storage.open">Aç</button>
+          <button class="ghost danger" id="btn-clear-captures" data-i18n="storage.clear">Temizle</button>
         </div>
       </div>
     </section>
   </main>
 
   <footer>
-    <button class="primary" id="btn-test">Önizlemeyi test et</button>
-    <button class="ghost" id="btn-reset">Varsayılanlar</button>
+    <button class="primary" id="btn-test" data-i18n="footer.test">Önizlemeyi test et</button>
+    <button class="ghost" id="btn-reset" data-i18n="footer.reset">Varsayılanlar</button>
     <span class="version" id="version"></span>
   </footer>
 
+  <script src="../shared/i18n.js"></script>
   <script src="../shared/chime.js"></script>
   <script src="settings.js"></script>
 </body>

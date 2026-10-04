@@ -3,6 +3,22 @@ const controls = [...document.querySelectorAll('[data-path]')]
 let state = null
 let autoFolders = []
 let applying = false
+let lang = null
+
+function t(key, vars) {
+  return i18n.translate(lang, key, vars)
+}
+
+// Dil degistiyse sayfadaki tum metinleri yeniden yazar.
+function applyLanguage() {
+  const next = window.api.lang()
+  if (next === lang) return false
+  lang = next
+  i18n.applyToDocument(document, lang)
+  return true
+}
+
+applyLanguage()
 
 /* ---------------- yardimcilar ---------------- */
 
@@ -78,7 +94,8 @@ function renderFolders() {
   if (!entries.length) {
     const empty = document.createElement('div')
     empty.className = 'folder auto'
-    empty.innerHTML = '<span>Ekran görüntüsü klasörü bulunamadı</span>'
+    empty.innerHTML = '<span></span>'
+    empty.firstChild.textContent = t('capture.noFolder')
     list.appendChild(empty)
     return
   }
@@ -92,12 +109,12 @@ function renderFolders() {
     row.appendChild(label)
     if (entry.auto) {
       const tag = document.createElement('em')
-      tag.textContent = 'otomatik'
+      tag.textContent = t('capture.auto')
       row.appendChild(tag)
     } else {
       const remove = document.createElement('button')
       remove.textContent = '✕'
-      remove.title = 'Listeden çıkar'
+      remove.title = t('capture.removeFolder')
       remove.addEventListener('click', () => {
         const next = state.capture.extraFolders.filter(dir => dir !== entry.dir)
         save({ capture: { extraFolders: next } })
@@ -114,8 +131,10 @@ function renderFolders() {
 // secenekleriyle ayni listeye eklenir.
 function renderDisplays(displays) {
   const select = document.getElementById('display-select')
+  for (const option of select.querySelectorAll('[data-display]')) option.remove()
   for (const display of displays || []) {
     const option = document.createElement('option')
+    option.dataset.display = '1'
     option.value = display.id
     option.textContent = display.label
     select.appendChild(option)
@@ -166,7 +185,7 @@ function keyName(code) {
 }
 
 function prettyAccelerator(accelerator) {
-  if (!accelerator) return 'Atanmadı'
+  if (!accelerator) return t('shortcuts.none')
   return accelerator.replace('CommandOrControl', 'Ctrl').replace(/\+/g, ' + ')
 }
 
@@ -188,7 +207,7 @@ function stopRecording() {
 for (const button of document.querySelectorAll('[data-hotkey]')) {
   button.addEventListener('click', () => {
     recording = button
-    button.textContent = 'Tuş kombinasyonuna bas...'
+    button.textContent = t('shortcuts.recording')
     button.classList.add('recording')
   })
   button.addEventListener('blur', stopRecording)
@@ -226,6 +245,7 @@ window.addEventListener('keydown', event => {
 
 async function save(patch) {
   state = await window.api.update(patch)
+  if (applyLanguage()) return refresh()
   renderAll(state)
   renderFolders()
   renderAnchor()
@@ -276,20 +296,23 @@ document.getElementById('btn-clear-captures').addEventListener('click', async ()
 
 function showStats(stats) {
   document.getElementById('storage-stats').textContent =
-    stats.count + ' dosya · ' + formatBytes(stats.bytes)
+    t(stats.count === 1 ? 'storage.stats.one' : 'storage.stats', { count: stats.count, size: formatBytes(stats.bytes) })
 }
 
 /* ---------------- baslangic ---------------- */
 
 window.api.onChanged(config => {
   state = config
+  if (applyLanguage()) return refresh()
   renderAll(state)
   renderFolders()
   renderAnchor()
   renderHotkeys()
 })
 
-window.api.get().then(payload => {
+// Ekran adlari, uyarilar ve istatistikler ana surecten gelir; dil
+// degistiginde de yeniden istenir.
+function render(payload) {
   state = payload.config
   autoFolders = payload.watchedFolders
   renderDisplays(payload.displays)
@@ -300,13 +323,20 @@ window.api.get().then(payload => {
   showStats(payload.stats)
   if (payload.shortcutErrors && payload.shortcutErrors.length) {
     const warning = document.getElementById('shortcut-warning')
-    warning.textContent = 'Kaydedilemedi (başka uygulama kullanıyor): ' +
+    warning.textContent = t('shortcuts.failed') +
       payload.shortcutErrors.map(prettyAccelerator).join(', ')
     warning.classList.add('warn')
+  } else {
+    document.getElementById('shortcut-warning').classList.remove('warn')
   }
   document.getElementById('version').textContent = 'v' + payload.version
   if (!payload.packaged) {
-    document.getElementById('autostart-note').textContent =
-      'Geliştirme modunda çalışıyor; bu ayar ancak kurulu sürümde güvenilir çalışır.'
+    document.getElementById('autostart-note').textContent = t('general.launchAtLogin.dev')
   }
-})
+}
+
+function refresh() {
+  return window.api.get().then(render)
+}
+
+refresh()

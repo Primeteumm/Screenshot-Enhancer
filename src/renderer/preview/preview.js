@@ -22,7 +22,13 @@ const ICONS = {
 }
 
 // Uzun suren islemlerde once bu mesaj gosterilir.
-const PENDING = { ocr: 'Metin okunuyor...' }
+const PENDING = { ocr: 'preview.reading' }
+
+let lang = window.preview.lang
+
+function t(key) {
+  return i18n.translate(lang, key)
+}
 
 let layout = {
   align: 'right',
@@ -139,6 +145,11 @@ function applyLayout(next) {
   stack.classList.toggle('up', layout.direction === 'up')
   stack.classList.toggle('down', layout.direction !== 'up')
   document.body.classList.toggle('light', layout.theme === 'light')
+  // Dil degistiyse ekrandaki kartlarin ipuclari da guncellensin.
+  if (layout.lang && layout.lang !== lang) {
+    lang = layout.lang
+    i18n.applyToDocument(document, lang)
+  }
 }
 
 function cardHeight(record) {
@@ -165,19 +176,17 @@ function buildCard(record) {
   overlay.className = 'overlay'
   overlay.innerHTML =
     '<div class="scrim"></div>' +
-    '<div class="grip" title="Pencereyi tasi"><i></i></div>' +
-    '<button class="select" title="Birlikte sürüklemek için seç" data-act="select" draggable="false">' + ICONS.select + '</button>' +
-    '<button class="close" title="Kapat" data-act="close" draggable="false">' + ICONS.close + '</button>' +
+    '<div class="grip" data-i18n-title="preview.move"><i></i></div>' +
+    '<button class="select" data-i18n-title="preview.select" data-act="select" draggable="false">' + ICONS.select + '</button>' +
+    '<button class="close" data-i18n-title="preview.close" data-act="close" draggable="false">' + ICONS.close + '</button>' +
     (layout.showToolbar
       ? '<div class="toolbar">' +
-        '<button data-act="copy" title="Panoya kopyala" draggable="false">' + ICONS.copy + '</button>' +
-        '<button data-act="save" title="Farkli kaydet" draggable="false">' + ICONS.save + '</button>' +
-        '<button data-act="open" title="Ac" draggable="false">' + ICONS.open + '</button>' +
-        '<button data-act="ocr" title="Metni panoya kopyala" draggable="false">' + ICONS.ocr + '</button>' +
-        '<button data-act="reveal" title="Klasorde goster" draggable="false">' + ICONS.reveal + '</button>' +
-        '<button data-act="pin" title="Sabitle" draggable="false">' + ICONS.pin + '</button>' +
+        ['copy', 'save', 'open', 'ocr', 'reveal', 'pin']
+          .map(act => '<button data-act="' + act + '" data-i18n-title="preview.' + act + '" draggable="false">' + ICONS[act] + '</button>')
+          .join('') +
         '</div>'
       : '')
+  for (const el of overlay.querySelectorAll('[data-i18n-title]')) el.title = t(el.dataset.i18nTitle)
   card.appendChild(overlay)
 
   const toast = document.createElement('div')
@@ -252,7 +261,7 @@ function buildCard(record) {
         if (card._pinned) card._timer.cancel()
         else card._timer.play()
       }
-      showToast(card, card._pinned ? 'Sabitlendi' : 'Sabitleme kaldirildi')
+      showToast(card, t(card._pinned ? 'preview.pinned' : 'preview.unpinned'))
       return
     }
     run(card, record.id, act)
@@ -266,7 +275,7 @@ async function run(card, id, action) {
   // karttan ayrildigi icin sayac islerdi ve kart elinizin altindan kaybolurdu.
   card._busy = true
   if (card._timer) card._timer.pause()
-  if (PENDING[action]) showToast(card, PENDING[action], true)
+  if (PENDING[action]) showToast(card, t(PENDING[action]), true)
   let result = null
   try {
     result = await window.preview.action(id, action)
@@ -427,4 +436,5 @@ function endMove() {
 document.addEventListener('mouseup', endMove)
 window.addEventListener('blur', endMove)
 
+i18n.applyToDocument(document, lang)
 window.preview.ready()

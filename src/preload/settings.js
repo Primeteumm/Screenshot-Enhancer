@@ -1,6 +1,8 @@
 const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('api', {
+  // Esli: sayfa ilk karede dogru dilde cizilsin.
+  lang: () => ipcRenderer.sendSync('i18n:lang'),
   get: () => ipcRenderer.invoke('settings:get'),
   update: patch => ipcRenderer.invoke('settings:update', patch),
   reset: () => ipcRenderer.invoke('settings:reset'),

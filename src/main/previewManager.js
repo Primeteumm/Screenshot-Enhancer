@@ -1,6 +1,7 @@
 const { BrowserWindow, screen } = require('electron')
 const path = require('path')
 const config = require('./config')
+const i18n = require('./i18n')
 
 const PAD = 30 // pencere icinde golge/tasma icin ayrilan bosluk
 const GAP = 12 // kartlar arasi bosluk
@@ -394,7 +395,8 @@ class PreviewManager {
       theme: cfg.preview.theme,
       showToolbar: cfg.preview.showToolbar,
       autoHideSeconds: cfg.preview.autoHideSeconds,
-      animation: cfg.animation
+      animation: cfg.animation,
+      lang: i18n.lang()
     }
   }
 

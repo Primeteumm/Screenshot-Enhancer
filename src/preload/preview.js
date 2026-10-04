@@ -1,6 +1,8 @@
 const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('preview', {
+  // Arayuz dili; sonraki degisiklikler layout ile gelir.
+  lang: ipcRenderer.sendSync('i18n:lang'),
   ready: () => ipcRenderer.send('preview:ready'),
   // Kartlarin pencere icindeki dikdortgenleri; isabet testini ana surec yapar.
   hitboxes: rects => ipcRenderer.send('preview:hitboxes', rects),

@@ -6,6 +6,8 @@ const { EventEmitter } = require('events')
 const DEFAULTS = {
   version: 1,
   general: {
+    // auto -> sistem dili Turkce ise Turkce, degilse Ingilizce
+    language: 'auto',
     launchAtLogin: false,
     startHidden: true
   },
@@ -70,6 +72,7 @@ const DEFAULTS = {
 // Serbest metin olarak kaydedilebilen ama sinirli deger kumesi olan alanlar.
 // Bozuk/eski bir deger okunursa varsayilana donulur.
 const ENUMS = {
+  'general.language': ['auto', 'tr', 'en'],
   'preview.placement': ['cursor', 'fixed'],
   'preview.anchor': [
     'top-left', 'top-center', 'top-right',

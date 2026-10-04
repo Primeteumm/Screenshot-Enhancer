@@ -5,6 +5,7 @@ const config = require('./config')
 const store = require('./store')
 const settingsWindow = require('./settingsWindow')
 const previewManager = require('./previewManager')
+const { t } = require('./i18n')
 
 const ASSETS = path.join(__dirname, '..', '..', 'assets')
 
@@ -28,39 +29,39 @@ function buildMenu(actions) {
   return Menu.buildFromTemplate([
     { label: 'Screenshot Enhancer', enabled: false },
     { type: 'separator' },
-    { label: 'Bölge yakala', click: () => actions.captureRegion() },
-    { label: 'Tüm ekranı yakala', click: () => actions.captureScreen() },
+    { label: t('tray.captureRegion'), click: () => actions.captureRegion() },
+    { label: t('tray.captureScreen'), click: () => actions.captureScreen() },
     { type: 'separator' },
     {
-      label: 'Yakalamayı duraklat',
+      label: t('tray.pause'),
       type: 'checkbox',
       checked: cfg.capture.paused,
       click: menuItem => actions.setPaused(menuItem.checked)
     },
     {
-      label: 'Son görüntüyü tekrar göster',
+      label: t('tray.showLast'),
       click: () => actions.showLast()
     },
     {
-      label: 'Onizlemeyi test et',
+      label: t('tray.test'),
       click: () => actions.testPreview()
     },
     {
-      label: 'Acik onizlemeleri kapat',
+      label: t('tray.clear'),
       click: () => previewManager.clear()
     },
     { type: 'separator' },
-    { label: 'Ayarlar...', click: () => settingsWindow.show() },
-    { label: 'Yakalama klasorunu ac', click: () => shell.openPath(store.dir) },
+    { label: t('tray.settings'), click: () => settingsWindow.show() },
+    { label: t('tray.openFolder'), click: () => shell.openPath(store.dir) },
     { type: 'separator' },
-    { label: 'Cikis', click: () => actions.quit() }
+    { label: t('tray.quit'), click: () => actions.quit() }
   ])
 }
 
 function updateTooltip() {
   if (!tray || tray.isDestroyed()) return
   tray.setToolTip(config.get().capture.paused
-    ? 'Screenshot Enhancer - yakalama duraklatıldı'
+    ? t('app.paused')
     : 'Screenshot Enhancer')
 }
 

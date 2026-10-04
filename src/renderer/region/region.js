@@ -4,6 +4,8 @@ const box = document.getElementById('box')
 const sizeLabel = document.getElementById('size')
 const hint = document.getElementById('hint')
 
+i18n.applyToDocument(document, window.region.lang)
+
 let origin = null
 let current = null
 

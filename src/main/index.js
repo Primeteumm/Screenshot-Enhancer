@@ -11,6 +11,8 @@ const folderWatcher = require('./folderWatcher')
 const settingsWindow = require('./settingsWindow')
 const tray = require('./tray')
 const capture = require('./capture')
+const i18n = require('./i18n')
+const { t } = i18n
 
 const ASSETS = path.join(__dirname, '..', '..', 'assets')
 // Kilit acildiktan sonra pencereyi yenilemeden once beklenen sure (ms):
@@ -359,14 +361,17 @@ function listDisplays() {
   const primary = screen.getPrimaryDisplay().id
   return screen.getAllDisplays().map((display, index) => ({
     id: String(display.id),
-    label: 'Ekran ' + (index + 1) + ' - ' + display.size.width + 'x' + display.size.height +
-      (display.id === primary ? ' (birincil)' : '')
+    label: t('display.label', { n: index + 1, size: display.size.width + 'x' + display.size.height }) +
+      (display.id === primary ? t('display.primary') : '')
   }))
 }
 
 /* ---------------- IPC ---------------- */
 
 function registerIpc() {
+  // Pencereler acilirken dili esli olarak sorar; ilk karede dogru metin cizilsin.
+  ipcMain.on('i18n:lang', event => { event.returnValue = i18n.lang() })
+
   /* --- onizleme penceresi --- */
   ipcMain.on('preview:ready', () => previewManager.onRendererReady())
 
@@ -414,7 +419,7 @@ function registerIpc() {
         if (image.isEmpty()) return { ok: false }
         clipboardWatcher.suppress(image)
         clipboard.writeImage(image)
-        return { ok: true, message: 'Panoya kopyalandı' }
+        return { ok: true, message: t('action.copied') }
       }
       case 'open': {
         await shell.openPath(record.filePath)
@@ -426,21 +431,21 @@ function registerIpc() {
       }
       case 'ocr': {
         const text = await readTextFromImage(record.filePath)
-        if (text === null) return { ok: false, message: 'OCR kullanılamıyor' }
-        if (!text) return { ok: false, message: 'Metin bulunamadı' }
+        if (text === null) return { ok: false, message: t('action.ocrUnavailable') }
+        if (!text) return { ok: false, message: t('action.noText') }
         clipboardWatcher.suppress(null)
         clipboard.writeText(text)
-        return { ok: true, message: 'Metin panoya kopyalandı' }
+        return { ok: true, message: t('action.textCopied') }
       }
       case 'save': {
         const result = await dialog.showSaveDialog({
-          title: 'Ekran görüntüsünü kaydet',
+          title: t('dialog.save'),
           defaultPath: path.join(app.getPath('pictures'), record.fileName),
           filters: [{ name: 'PNG', extensions: ['png'] }]
         })
         if (result.canceled || !result.filePath) return { ok: false }
         fs.copyFileSync(record.filePath, result.filePath)
-        return { ok: true, message: 'Kaydedildi' }
+        return { ok: true, message: t('action.saved') }
       }
       default:
         return { ok: false }
@@ -467,7 +472,7 @@ function registerIpc() {
 
   ipcMain.handle('settings:chooseFolder', async () => {
     const result = await dialog.showOpenDialog(settingsWindow.get() || undefined, {
-      title: 'Izlenecek klasoru sec',
+      title: t('dialog.chooseFolder'),
       properties: ['openDirectory']
     })
     if (result.canceled || !result.filePaths.length) return null

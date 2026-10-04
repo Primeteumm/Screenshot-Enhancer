@@ -15,7 +15,7 @@ macOS'taki ekran görüntüsü önizlemesinin ve Dropover'ın yaptığı işi Wi
 - **Kutucuğun üstünde** kopyala, farklı kaydet, aç, klasörde göster, sabitle düğmeleri.
 - **Yolundan çekilir** — odağı çalmaz, kutucuk dışında kalan her yer tıklama geçirgendir, süresi dolunca kendiliğinden kaybolur.
 
-Görünüm, konum, animasyon, ses, kısayollar — hepsi ayarlardan değiştirilebilir.
+Görünüm, konum, animasyon, ses, kısayollar — hepsi ayarlardan değiştirilebilir. Arayüz Türkçe ve İngilizce; varsayılan olarak Windows'un diline uyar.
 
 ---
 
@@ -78,7 +78,7 @@ Tepsi simgesine tıklayınca açılır. Değişiklikler anında uygulanır, kayd
 
 | Bölüm | Neler var |
 | --- | --- |
-| Genel | Windows açılışında başlat, açılışta pencereyi gizle |
+| Genel | Dil (sistem / Türkçe / English), Windows açılışında başlat, açılışta pencereyi gizle |
 | Yakalama | Pano izleme ve modu, kontrol sıklığı, klasör izleme, ek klasörler |
 | Görünüm | Nerede belirsin (alındığı yerde / sabit konumda), 8 yönlü konum ızgarası, boyut, kenar boşluğu, aynı anda kaç kutucuk, ekranda kalma süresi, saydamlık, hangi monitör, tema, araç çubuğu |
 | Kısayollar | Global kısayollar ve dört kısayolun ataması |
@@ -104,15 +104,17 @@ Tepsi simgesine tıklayınca açılır. Değişiklikler anında uygulanır, kayd
 
 ---
 
-## Ölçerek çözülen üç Windows davranışı
+## Ölçerek çözülen dört Windows davranışı
 
-Bu üçü belgelenmemiş ve deneyerek bulunması zor olduğu için not düşülmüştür.
+Bunlar belgelenmemiş ve deneyerek bulunması zor olduğu için not düşülmüştür.
 
 **1. `setIgnoreMouseEvents(ignore, { forward: true })` mousemove olaylarını renderer'a iletmiyor.** İki bağımsız ölçümde de sıfır olay geldi, `focusable` durumundan bağımsız olarak. Bu yüzden isabet testi renderer'da değil ana süreçte yapılır: renderer kart dikdörtgenlerini bildirir, ana süreç imleç konumunu ~24 ms'de bir yoklar. Araç çubuğunun görünürlüğü de CSS `:hover` yerine bu testten gelen `.hot` sınıfıyla sürülür.
 
 **2. Önizleme penceresini `hide()` edip yeniden göstermek girdi durumunu kalıcı bozuyor.** Sonrasında `setIgnoreMouseEvents(false)` çağrılsa bile fare olayları renderer'a ulaşmıyor, kartın düğmeleri ölü kalıyor. Pencere artık gizlenmiyor; son kart kapanınca yalnızca boşaltılıyor. Kartsızken tamamen şeffaf ve tıklama geçirgen olduğu için maliyeti yok, `skipTaskbar` sayesinde Alt+Tab listesinde de görünmüyor.
 
-**3. Katmanın tamamı tıklanabilir olursa dosya sürüklemesi kırılıyor.** Sürüklemenin kaynağı `draggable` karttır; üstünü kaplayan katman mousedown'ı yutarsa sürükleme hiç başlamaz. Bu yüzden katman `pointer-events: none` kalır, yalnızca düğmeler ve taşıma tutamacı fare olayı alır.
+**3. Pencerenin üstü bir kez tamamen örtülünce Chromium onu kalıcı olarak "gizli" sayıyor.** `Win+Shift+S` alıntı katmanı, tam ekran bir video ya da oyun kutucuğun üstünü kapatıp kalktığında kart son karesiyle ekranda kalıyor ama sayfaya tek bir fare olayı ulaşmıyor. Sebep Chromium'un pencere örtülme takibi (`CalculateNativeWinOcclusion`); tıklama geçirgen bu pencere için örtü kalkınca durumu geri almıyor. Ölçüm: tam ekran bir pencere 1,5 sn örtüp kalkınca kart bir daha tıklanmıyor, özellik kapatılınca her seferinde tıklanıyor. Uygulama açılırken bu özellik kapatılıyor.
+
+**4. Katmanın tamamı tıklanabilir olursa dosya sürüklemesi kırılıyor.** Sürüklemenin kaynağı `draggable` karttır; üstünü kaplayan katman mousedown'ı yutarsa sürükleme hiç başlamaz. Bu yüzden katman `pointer-events: none` kalır, yalnızca düğmeler ve taşıma tutamacı fare olayı alır.
 
 Bir de OCR tarafında: tanıma doğrudan yazının piksel yüksekliğine bağlı, ekrandaki 12–13 px'lik metin ham hâliyle verildiğinde harfler karışıyor. Görüntü OCR'a verilmeden önce büyütülüyor — 560×200 terminal metninde ölçüm: ham %94, 4 kat büyütülmüş %100. Ölçek 4 katla ve ~8 MP bütçesiyle sınırlı.
 
@@ -131,6 +133,7 @@ Geçici PNG'ler `%APPDATA%\screenshot-enhancer\captures` altına yazılır ve se
 ```
 src/main/            ana süreç
   index.js           yaşam döngüsü, yakalama akışı, kısayollar, IPC
+  i18n.js            ayardaki dili çözer, ana süreç metinleri
   config.js          ayarlar (şema doğrulamalı birleştirme ve göç)
   store.js           yakalama kayıtları ve disk temizliği
   clipboardWatcher.js  pano yoklama + ucuz parmak izi
@@ -144,6 +147,7 @@ src/renderer/
   region/            bölge seçim katmanı
   settings/          ayarlar arayüzü
   shared/chime.js    yakalama sesinin sentezi
+  shared/i18n.js     Türkçe / İngilizce arayüz metinleri (tek kaynak)
 scripts/             ikon üreteci, OCR betiği
 ```
 
