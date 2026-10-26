@@ -145,7 +145,6 @@ function applyLayout(next) {
   stack.classList.toggle('up', layout.direction === 'up')
   stack.classList.toggle('down', layout.direction !== 'up')
   document.body.classList.toggle('light', layout.theme === 'light')
-  document.body.classList.toggle('glass', layout.theme === 'glass')
   // Dil degistiyse ekrandaki kartlarin ipuclari da guncellensin.
   if (layout.lang && layout.lang !== lang) {
     lang = layout.lang

@@ -338,22 +338,22 @@ svg {
   100% { opacity: 0; }
 }
 
-/* ---------- cam (liquid glass) temasi ----------
-   Kartin arkasindaki masaustu bulaniklastirilamaz (seffaf pencerede
+/* ---------- cam (liquid glass) gorunumu ----------
+   Her iki temada da temel gorunum. Kartin arkasindaki masaustu bulaniklastirilamaz (seffaf pencerede
    backdrop-filter sayfanin disini gormez); bu yuzden bulaniklik, goruntunun
    ustunde duran dugmelere uygulanir. Kartin kendisi ince, parlak bir kenarla
    cam gibi cercevelenir. */
-body.glass {
+body {
   --surface: rgba(255, 255, 255, 0.1);
   --border: rgba(255, 255, 255, 0.32);
   --shadow: 0 18px 40px rgba(0, 0, 0, 0.38), 0 2px 8px rgba(0, 0, 0, 0.22);
 }
 
-body.glass .card {
+.card {
   box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 
-body.glass .card::after {
+.card::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -362,42 +362,96 @@ body.glass .card::after {
   pointer-events: none;
 }
 
-body.glass .card.selected {
+.card.selected {
   box-shadow: var(--shadow), 0 0 0 2px var(--accent);
 }
 
-body.glass .scrim {
+.scrim {
   background: linear-gradient(to top, rgba(8, 10, 16, 0.5), rgba(8, 10, 16, 0));
 }
 
-body.glass .toolbar button,
-body.glass .close,
-body.glass .select,
-body.glass .badge,
-body.glass .toast {
+.toolbar button,
+.close,
+.select,
+.badge,
+.toast {
   background: rgba(255, 255, 255, 0.16);
   border-color: rgba(255, 255, 255, 0.34);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 4px 12px rgba(0, 0, 0, 0.22);
   backdrop-filter: blur(14px) saturate(180%);
 }
 
-body.glass .toolbar button:hover,
-body.glass .select:hover {
+.toolbar button:hover,
+.select:hover {
   background: rgba(255, 255, 255, 0.3);
   border-color: rgba(255, 255, 255, 0.5);
   color: #f2f4f9;
 }
 
-body.glass .close:hover {
+.close:hover {
   background: rgba(229, 72, 77, 0.75);
 }
 
-body.glass .toolbar button.pinned,
-body.glass .card.selected .select {
+.toolbar button.pinned,
+.card.selected .select {
   background: rgba(255, 255, 255, 0.85);
   color: var(--on-accent);
 }
 
-body.glass .toast {
+.toast {
   background: rgba(20, 23, 32, 0.45);
+}
+
+/* Acik tema: ayni cam, beyaza yakin buzlu yuzeyler ve koyu simgeler. */
+body.light {
+  --surface: rgba(255, 255, 255, 0.6);
+  --border: rgba(15, 18, 28, 0.14);
+  --accent: #14171f;
+  --on-accent: #fff;
+  --shadow: 0 18px 40px rgba(20, 24, 40, 0.22), 0 2px 8px rgba(20, 24, 40, 0.12);
+}
+
+body.light .card {
+  box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+body.light .toolbar button,
+body.light .close,
+body.light .select,
+body.light .badge {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(255, 255, 255, 0.8);
+  color: #14171f;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 4px 12px rgba(20, 24, 40, 0.18);
+}
+
+body.light .toolbar button:hover,
+body.light .select:hover {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: #fff;
+  color: #14171f;
+}
+
+body.light .close:hover {
+  color: #fff;
+}
+
+body.light .toolbar button.pinned,
+body.light .card.selected .select {
+  background: rgba(20, 23, 31, 0.85);
+  color: #fff;
+}
+
+body.light .toast {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.85);
+  color: #14171f;
+}
+
+body.light .toast.pending {
+  color: rgba(20, 23, 31, 0.8);
+}
+
+body.light .scrim {
+  background: linear-gradient(to top, rgba(240, 242, 247, 0.55), rgba(240, 242, 247, 0));
 }

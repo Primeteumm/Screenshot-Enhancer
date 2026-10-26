@@ -1,13 +1,38 @@
+/* Cam (liquid glass) gorunumu her iki temada da temel: yari saydam paneller,
+   ince kenarlar ve ustte bir parlama cizgisi. Windows akrilik malzemesi
+   cercevesiz pencerede eski kareleri temizlemedigi (yazilar ust uste bindigi)
+   icin zemin duz kalir. */
 :root {
-  --bg: #12141c;
-  --panel: #191c26;
-  --panel-2: #20242f;
-  --border: rgba(255, 255, 255, 0.08);
+  --bg: #111319;
+  --panel: rgba(255, 255, 255, 0.05);
+  --panel-2: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.14);
+  --hover: rgba(255, 255, 255, 0.1);
+  --sheen: inset 0 1px 0 rgba(255, 255, 255, 0.1);
   --text: #eef0f6;
   --muted: rgba(238, 240, 246, 0.52);
   --accent: #f2f4f8;
+  --accent-hover: #fff;
   --on-accent: #12141c;
+  --knob: rgba(255, 255, 255, 0.75);
+  --option-bg: #1b1e28;
   --danger: #e5484d;
+}
+
+body.light {
+  --bg: #e9ecf1;
+  --panel: rgba(255, 255, 255, 0.6);
+  --panel-2: rgba(15, 18, 28, 0.05);
+  --border: rgba(15, 18, 28, 0.1);
+  --hover: rgba(15, 18, 28, 0.08);
+  --sheen: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --text: #14171f;
+  --muted: rgba(20, 23, 31, 0.58);
+  --accent: #14171f;
+  --accent-hover: #2a2e3a;
+  --on-accent: #fff;
+  --knob: #fff;
+  --option-bg: #fff;
 }
 
 * {
@@ -42,6 +67,7 @@ body {
   padding-left: 12px;
   flex: none;
   border-bottom: 1px solid var(--border);
+  background: var(--panel);
 }
 
 .brand {
@@ -74,7 +100,7 @@ body {
 }
 
 .window-buttons button:hover {
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--hover);
   color: var(--text);
 }
 
@@ -95,8 +121,9 @@ main::-webkit-scrollbar {
 }
 
 main::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
-  border: 3px solid var(--bg);
+  background: var(--hover);
+  border: 3px solid transparent;
+  background-clip: padding-box;
   border-radius: 8px;
 }
 
@@ -106,6 +133,7 @@ section {
   border-radius: 12px;
   padding: 6px 14px;
   margin-bottom: 12px;
+  box-shadow: var(--sheen);
 }
 
 h2 {
@@ -191,6 +219,11 @@ input.text {
   font-size: 12.5px;
   cursor: pointer;
   outline: none;
+  box-shadow: var(--sheen);
+}
+
+select option {
+  background: var(--option-bg);
 }
 
 input.text {
@@ -223,6 +256,7 @@ input.text:focus {
   border-radius: 999px;
   background: var(--panel-2);
   border: 1px solid var(--border);
+  box-shadow: var(--sheen);
 }
 
 .switch i::after {
@@ -233,7 +267,8 @@ input.text:focus {
   width: 15px;
   height: 15px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.75);
+  background: var(--knob);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
   transition: transform 120ms ease;
 }
 
@@ -258,10 +293,11 @@ button.primary {
   border: 1px solid var(--border);
   background: var(--panel-2);
   color: var(--text);
+  box-shadow: var(--sheen);
 }
 
 button.ghost:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--hover);
 }
 
 button.ghost.danger:hover {
@@ -277,7 +313,7 @@ button.primary {
 }
 
 button.primary:hover {
-  background: #fff;
+  background: var(--accent-hover);
 }
 
 .btn-group {
@@ -299,15 +335,16 @@ button.hotkey {
   font-size: 12.5px;
   font-variant-numeric: tabular-nums;
   cursor: pointer;
+  box-shadow: var(--sheen);
 }
 
 button.hotkey:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--hover);
 }
 
 button.hotkey.recording {
   border-color: var(--accent);
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--hover);
   color: var(--accent);
 }
 
@@ -331,13 +368,13 @@ button.hotkey.recording {
 .anchor-grid button {
   border: 1px solid transparent;
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--panel-2);
   cursor: pointer;
   padding: 0;
 }
 
 .anchor-grid button:hover {
-  background: rgba(255, 255, 255, 0.16);
+  background: var(--hover);
 }
 
 .anchor-grid button.on {
@@ -350,7 +387,7 @@ button.hotkey.recording {
   border-radius: 6px;
   background: repeating-linear-gradient(
     45deg,
-    rgba(255, 255, 255, 0.05) 0 3px,
+    var(--panel-2) 0 3px,
     transparent 3px 6px
   );
 }
@@ -416,7 +453,7 @@ button.hotkey.recording {
   font-size: 10px;
   padding: 2px 6px;
   border-radius: 5px;
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--panel-2);
 }
 
 /* ---------- alt cubuk ---------- */
@@ -434,42 +471,4 @@ footer {
   margin-left: auto;
   font-size: 11px;
   color: var(--muted);
-}
-
-/* ---------- cam (liquid glass) temasi ----------
-   Windows akrilik malzemesi cercevesiz pencerede eski kareleri temizlemiyor
-   (yazilar ust uste biniyor); bu yuzden zemin duz kalir, cam hissi yari
-   saydam paneller ve kenar parlamalarindan gelir. */
-body.glass {
-  --panel: rgba(255, 255, 255, 0.05);
-  --panel-2: rgba(255, 255, 255, 0.08);
-  --border: rgba(255, 255, 255, 0.14);
-  background: #111319;
-}
-
-body.glass .titlebar,
-body.glass footer {
-  background: rgba(255, 255, 255, 0.04);
-}
-
-body.glass section {
-  border-color: rgba(255, 255, 255, 0.16);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
-}
-
-body.glass select,
-body.glass input.text,
-body.glass button.ghost,
-body.glass button.hotkey,
-body.glass .switch i {
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
-
-body.glass select option {
-  background: #1b1e28;
-}
-
-body.glass main::-webkit-scrollbar-thumb {
-  border-color: transparent;
-  background-clip: padding-box;
 }

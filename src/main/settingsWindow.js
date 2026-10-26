@@ -1,5 +1,6 @@
 const { BrowserWindow } = require('electron')
 const path = require('path')
+const config = require('./config')
 
 let win = null
 
@@ -11,7 +12,8 @@ function create() {
     minHeight: 520,
     show: false,
     frame: false,
-    backgroundColor: '#12141c',
+    // Sayfa yuklenene kadar gorunen zemin, temanin zeminiyle ayni olsun.
+    backgroundColor: config.get().preview.theme === 'light' ? '#e9ecf1' : '#111319',
     title: 'Screenshot Enhancer',
     icon: path.join(__dirname, '..', '..', 'assets', 'icon.png'),
     webPreferences: {

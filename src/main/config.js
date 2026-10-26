@@ -79,7 +79,7 @@ const ENUMS = {
     'left', 'right',
     'bottom-left', 'bottom-center', 'bottom-right'
   ],
-  'preview.theme': ['dark', 'light', 'glass'],
+  'preview.theme': ['dark', 'light'],
   'capture.clipboardMode': ['screenshots', 'allImages'],
   'animation.type': ['slide', 'side', 'pop', 'fade'],
   'animation.easing': ['linear', 'smooth', 'soft', 'snappy', 'spring', 'inOut']

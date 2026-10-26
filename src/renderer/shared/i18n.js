@@ -105,7 +105,6 @@
       'preview.theme': 'Tema',
       'preview.theme.dark': 'Koyu',
       'preview.theme.light': 'Açık',
-      'preview.theme.glass': 'Cam (Liquid Glass)',
       'preview.toolbar': 'Araç çubuğu',
       'preview.toolbar.note': 'Kutucuğun üstüne gelince kopyala / kaydet / aç düğmeleri.',
 
@@ -270,7 +269,6 @@
       'preview.theme': 'Theme',
       'preview.theme.dark': 'Dark',
       'preview.theme.light': 'Light',
-      'preview.theme.glass': 'Glass (Liquid Glass)',
       'preview.toolbar': 'Toolbar',
       'preview.toolbar.note': 'Copy / save / open buttons when hovering a thumbnail.',
 
