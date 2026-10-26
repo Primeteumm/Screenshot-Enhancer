@@ -8,6 +8,7 @@
 Take a screenshot, get a floating thumbnail next to your cursor, and drag it straight into WhatsApp, Slack, Discord, a browser upload field or any folder.
 No hunting for files, no opening, no renaming.
 
+[![Build](https://img.shields.io/github/actions/workflow/status/Primeteumm/Screenshot-Enhancer/build.yml?branch=main&style=flat-square&label=build&color=14171f)](https://github.com/Primeteumm/Screenshot-Enhancer/actions/workflows/build.yml)
 [![Latest release](https://img.shields.io/github/v/release/Primeteumm/Screenshot-Enhancer?style=flat-square&color=14171f)](https://github.com/Primeteumm/Screenshot-Enhancer/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/Primeteumm/Screenshot-Enhancer/total?style=flat-square&color=14171f)](https://github.com/Primeteumm/Screenshot-Enhancer/releases)
 [![Platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-14171f?style=flat-square&logo=windows&logoColor=white)](https://github.com/Primeteumm/Screenshot-Enhancer/releases/latest)
@@ -15,7 +16,7 @@ No hunting for files, no opening, no renaming.
 [![License: MIT](https://img.shields.io/github/license/Primeteumm/Screenshot-Enhancer?style=flat-square&color=14171f)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/Primeteumm/Screenshot-Enhancer?style=flat-square&color=14171f)](https://github.com/Primeteumm/Screenshot-Enhancer/stargazers)
 
-[**Download for Windows**](https://github.com/Primeteumm/Screenshot-Enhancer/releases/latest) · [Features](#features) · [Shortcuts](#keyboard-shortcuts) · [How it works](#how-it-works) · [Build from source](#build-from-source)
+[**Download for Windows**](https://github.com/Primeteumm/Screenshot-Enhancer/releases/latest) · [Quick start](#quick-start) · [Features](#features) · [Shortcuts](#keyboard-shortcuts) · [How it works](#how-it-works) · [Build from source](#build-from-source)
 
 </div>
 
@@ -32,6 +33,14 @@ On macOS, every screenshot pops up a little thumbnail you can drag anywhere. On 
 - 🖼️ **Works with the tools you already use.** No new habit needed.
 - 🪶 **Stays out of your way.** Never steals focus, click-through everywhere except the thumbnail, fades away on its own.
 - 🔒 **Fully offline.** No account, no telemetry, OCR runs on the built-in Windows engine.
+
+## Quick start
+
+1. **Download** the `Screenshot Enhancer Setup` installer from the [latest release](https://github.com/Primeteumm/Screenshot-Enhancer/releases/latest) and run it.
+2. **Take a screenshot** the way you always do (`PrtSc`, `Win+Shift+S`, Snipping Tool…).
+3. **Drag the thumbnail** that appears next to your cursor into any app or folder.
+
+That's it. Click the tray icon to tweak anything.
 
 ## Features
 
@@ -186,7 +195,7 @@ scripts/               icon generator, OCR script
 
 ## Contributing
 
-Bug reports, feature ideas and pull requests are welcome. Open an [issue](https://github.com/Primeteumm/Screenshot-Enhancer/issues) to get started. New UI languages only need entries in [`src/renderer/shared/i18n.js`](src/renderer/shared/i18n.js).
+Bug reports, feature ideas and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) to get started, or pick an issue labeled [`good first issue`](https://github.com/Primeteumm/Screenshot-Enhancer/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22). Translations into new languages are especially welcome.
 
 ## License
 
