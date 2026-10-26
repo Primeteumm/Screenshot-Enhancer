@@ -145,16 +145,9 @@ function drawBrackets(c, box, thick, len, color, radius) {
 function buildAppIcon(size) {
   const S = 1024
   const c = new Canvas(S, S)
-  c.roundRect(40, 40, S - 80, S - 80, 224, (x, y) => {
-    const t = (x / S) * 0.35 + (y / S) * 0.65
-    return [
-      Math.round(91 + (139 - 91) * t),
-      Math.round(140 + (92 - 140) * t),
-      Math.round(255 + (246 - 255) * t),
-      255
-    ]
-  })
-  c.roundRect(40, 40, S - 80, (S - 80) / 2, 224, solid(255, 255, 255, 26))
+  // Arayuzle ayni dil: koyu zemin, ince acik kenar, beyaz isaret.
+  c.roundRect(40, 40, S - 80, S - 80, 224, solid(58, 62, 74, 255))
+  c.roundRect(52, 52, S - 104, S - 104, 212, solid(24, 26, 34, 255))
   drawBrackets(c, { x: 236, y: 236, w: S - 472, h: S - 472 }, 46, 168, solid(255, 255, 255, 255), 22)
   c.roundRect(S / 2 - 96, S / 2 - 72, 192, 144, 28, solid(255, 255, 255, 235))
   return encodePNG(size, size, c.downsample(size))

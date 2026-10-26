@@ -65,6 +65,7 @@ function renderAll(config) {
   applying = true
   for (const control of controls) paint(control, readPath(config, control.dataset.path))
   applying = false
+  document.body.classList.toggle('glass', config.preview.theme === 'glass')
 }
 
 function formatBytes(bytes) {

@@ -5,8 +5,8 @@
   --border: rgba(255, 255, 255, 0.08);
   --text: #eef0f6;
   --muted: rgba(238, 240, 246, 0.52);
-  --accent: #6d8cff;
-  --accent-2: #8b5cf6;
+  --accent: #f2f4f8;
+  --on-accent: #12141c;
   --danger: #e5484d;
 }
 
@@ -42,7 +42,6 @@ body {
   padding-left: 12px;
   flex: none;
   border-bottom: 1px solid var(--border);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent);
 }
 
 .brand {
@@ -177,11 +176,6 @@ input[type="range"]::-webkit-slider-thumb {
   background: var(--accent);
   border: 2px solid var(--panel);
   cursor: pointer;
-  transition: transform 120ms ease;
-}
-
-input[type="range"]::-webkit-slider-thumb:hover {
-  transform: scale(1.18);
 }
 
 select,
@@ -229,7 +223,6 @@ input.text:focus {
   border-radius: 999px;
   background: var(--panel-2);
   border: 1px solid var(--border);
-  transition: background 160ms ease;
 }
 
 .switch i::after {
@@ -241,17 +234,17 @@ input.text:focus {
   height: 15px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.75);
-  transition: transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1), background 160ms ease;
+  transition: transform 120ms ease;
 }
 
 .switch input:checked + i {
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  background: var(--accent);
   border-color: transparent;
 }
 
 .switch input:checked + i::after {
   transform: translateX(17px);
-  background: #fff;
+  background: var(--on-accent);
 }
 
 button.ghost,
@@ -265,7 +258,6 @@ button.primary {
   border: 1px solid var(--border);
   background: var(--panel-2);
   color: var(--text);
-  transition: background 120ms ease, transform 120ms ease;
 }
 
 button.ghost:hover {
@@ -280,12 +272,12 @@ button.ghost.danger:hover {
 
 button.primary {
   border-color: transparent;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  color: #fff;
+  background: var(--accent);
+  color: var(--on-accent);
 }
 
 button.primary:hover {
-  transform: translateY(-1px);
+  background: #fff;
 }
 
 .btn-group {
@@ -307,7 +299,6 @@ button.hotkey {
   font-size: 12.5px;
   font-variant-numeric: tabular-nums;
   cursor: pointer;
-  transition: border-color 120ms ease, background 120ms ease;
 }
 
 button.hotkey:hover {
@@ -316,7 +307,7 @@ button.hotkey:hover {
 
 button.hotkey.recording {
   border-color: var(--accent);
-  background: rgba(109, 140, 255, 0.16);
+  background: rgba(255, 255, 255, 0.12);
   color: var(--accent);
 }
 
@@ -335,7 +326,6 @@ button.hotkey.recording {
   border-radius: 10px;
   background: var(--panel-2);
   border: 1px solid var(--border);
-  transition: opacity 140ms ease;
 }
 
 .anchor-grid button {
@@ -344,16 +334,14 @@ button.hotkey.recording {
   background: rgba(255, 255, 255, 0.06);
   cursor: pointer;
   padding: 0;
-  transition: background 120ms ease, transform 120ms ease;
 }
 
 .anchor-grid button:hover {
   background: rgba(255, 255, 255, 0.16);
-  transform: translateY(-1px);
 }
 
 .anchor-grid button.on {
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  background: var(--accent);
   border-color: transparent;
 }
 
@@ -446,4 +434,42 @@ footer {
   margin-left: auto;
   font-size: 11px;
   color: var(--muted);
+}
+
+/* ---------- cam (liquid glass) temasi ----------
+   Windows akrilik malzemesi cercevesiz pencerede eski kareleri temizlemiyor
+   (yazilar ust uste biniyor); bu yuzden zemin duz kalir, cam hissi yari
+   saydam paneller ve kenar parlamalarindan gelir. */
+body.glass {
+  --panel: rgba(255, 255, 255, 0.05);
+  --panel-2: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.14);
+  background: #111319;
+}
+
+body.glass .titlebar,
+body.glass footer {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+body.glass section {
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+body.glass select,
+body.glass input.text,
+body.glass button.ghost,
+body.glass button.hotkey,
+body.glass .switch i {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+body.glass select option {
+  background: #1b1e28;
+}
+
+body.glass main::-webkit-scrollbar-thumb {
+  border-color: transparent;
+  background-clip: padding-box;
 }

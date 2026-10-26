@@ -12,7 +12,8 @@
   --border: rgba(255, 255, 255, 0.11);
   --text: #f2f4f9;
   --muted: rgba(242, 244, 249, 0.62);
-  --accent: #6d8cff;
+  --accent: #f2f4f8;
+  --on-accent: #12141c;
   --shadow: 0 14px 34px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.35);
 }
 
@@ -146,11 +147,9 @@ body {
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.55);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-  transition: background 120ms ease, width 120ms ease;
 }
 
 .grip:hover i {
-  width: 44px;
   background: #fff;
 }
 
@@ -197,7 +196,6 @@ body {
   background: rgba(24, 27, 36, 0.82);
   color: #f2f4f9;
   cursor: pointer;
-  transition: background 120ms ease, transform 120ms ease;
 }
 
 .toolbar button:hover,
@@ -205,12 +203,13 @@ body {
 .select:hover {
   background: var(--accent);
   border-color: transparent;
-  transform: translateY(-1px);
+  color: var(--on-accent);
 }
 
 .toolbar button.pinned {
   background: var(--accent);
   border-color: transparent;
+  color: var(--on-accent);
 }
 
 .close,
@@ -239,6 +238,7 @@ body {
 .card.selected .select {
   background: var(--accent);
   border-color: transparent;
+  color: var(--on-accent);
 }
 
 .card.selected .select svg {
@@ -247,6 +247,7 @@ body {
 
 .close:hover {
   background: #e5484d;
+  color: #fff;
 }
 
 .badge {
@@ -308,7 +309,7 @@ svg {
   border: 1px solid rgba(255, 255, 255, 0.16);
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.8);
+  transform: translate(-50%, -50%);
   pointer-events: none;
 }
 
@@ -327,12 +328,76 @@ svg {
 }
 
 .toast.show {
-  animation: toast 1700ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: toast 1600ms ease forwards;
 }
 
 @keyframes toast {
-  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-  14% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-  76% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-  100% { opacity: 0; transform: translate(-50%, -62%) scale(0.96); }
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ---------- cam (liquid glass) temasi ----------
+   Kartin arkasindaki masaustu bulaniklastirilamaz (seffaf pencerede
+   backdrop-filter sayfanin disini gormez); bu yuzden bulaniklik, goruntunun
+   ustunde duran dugmelere uygulanir. Kartin kendisi ince, parlak bir kenarla
+   cam gibi cercevelenir. */
+body.glass {
+  --surface: rgba(255, 255, 255, 0.1);
+  --border: rgba(255, 255, 255, 0.32);
+  --shadow: 0 18px 40px rgba(0, 0, 0, 0.38), 0 2px 8px rgba(0, 0, 0, 0.22);
+}
+
+body.glass .card {
+  box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+body.glass .card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 10px 24px -12px rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+}
+
+body.glass .card.selected {
+  box-shadow: var(--shadow), 0 0 0 2px var(--accent);
+}
+
+body.glass .scrim {
+  background: linear-gradient(to top, rgba(8, 10, 16, 0.5), rgba(8, 10, 16, 0));
+}
+
+body.glass .toolbar button,
+body.glass .close,
+body.glass .select,
+body.glass .badge,
+body.glass .toast {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.34);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 4px 12px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(14px) saturate(180%);
+}
+
+body.glass .toolbar button:hover,
+body.glass .select:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #f2f4f9;
+}
+
+body.glass .close:hover {
+  background: rgba(229, 72, 77, 0.75);
+}
+
+body.glass .toolbar button.pinned,
+body.glass .card.selected .select {
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--on-accent);
+}
+
+body.glass .toast {
+  background: rgba(20, 23, 32, 0.45);
 }

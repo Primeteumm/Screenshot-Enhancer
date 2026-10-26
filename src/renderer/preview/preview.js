@@ -43,7 +43,7 @@ let layout = {
   opacity: 1,
   sound: { enabled: false, volume: 40 },
   autoHideSeconds: 9,
-  animation: { enabled: true, enterDuration: 420, exitDuration: 220, easing: 'spring', travel: 56 }
+  animation: { enabled: true, enterDuration: 260, exitDuration: 180, easing: 'smooth', travel: 56 }
 }
 
 let maxStack = 3
@@ -51,7 +51,7 @@ let maxStack = 3
 /* ---------------- yardimcilar ---------------- */
 
 function easing() {
-  return EASINGS[layout.animation.easing] || EASINGS.spring
+  return EASINGS[layout.animation.easing] || EASINGS.smooth
 }
 
 function enterMs() {
@@ -80,18 +80,18 @@ function enterFrames() {
       return [{ opacity: 0 }, { opacity: end }]
     case 'pop':
       return [
-        { transform: 'scale(0.72)', opacity: 0 },
+        { transform: 'scale(0.96)', opacity: 0 },
         { transform: 'scale(1)', opacity: end }
       ]
     case 'side':
       return [
-        { transform: 'translateX(' + shiftX() + 'px) scale(0.94)', opacity: 0 },
-        { transform: 'translateX(0) scale(1)', opacity: end }
+        { transform: 'translateX(' + shiftX() * 0.4 + 'px)', opacity: 0 },
+        { transform: 'translateX(0)', opacity: end }
       ]
     default:
       return [
-        { transform: 'translateY(' + shiftY() + 'px) scale(0.9)', opacity: 0 },
-        { transform: 'translateY(0) scale(1)', opacity: end }
+        { transform: 'translateY(' + shiftY() * 0.4 + 'px)', opacity: 0 },
+        { transform: 'translateY(0)', opacity: end }
       ]
   }
 }
@@ -101,16 +101,16 @@ function exitFrames() {
     case 'fade':
       return [{}, { opacity: 0 }]
     case 'pop':
-      return [{ transform: 'scale(1)' }, { transform: 'scale(0.82)', opacity: 0 }]
+      return [{ transform: 'scale(1)' }, { transform: 'scale(0.96)', opacity: 0 }]
     case 'side':
       return [
-        { transform: 'translateX(0) scale(1)' },
-        { transform: 'translateX(' + shiftX() * 0.5 + 'px) scale(0.94)', opacity: 0 }
+        { transform: 'translateX(0)' },
+        { transform: 'translateX(' + shiftX() * 0.3 + 'px)', opacity: 0 }
       ]
     default:
       return [
-        { transform: 'translateY(0) scale(1)' },
-        { transform: 'translateY(' + shiftY() * 0.4 + 'px) scale(0.92)', opacity: 0 }
+        { transform: 'translateY(0)' },
+        { transform: 'translateY(' + shiftY() * 0.2 + 'px)', opacity: 0 }
       ]
   }
 }
@@ -145,6 +145,7 @@ function applyLayout(next) {
   stack.classList.toggle('up', layout.direction === 'up')
   stack.classList.toggle('down', layout.direction !== 'up')
   document.body.classList.toggle('light', layout.theme === 'light')
+  document.body.classList.toggle('glass', layout.theme === 'glass')
   // Dil degistiyse ekrandaki kartlarin ipuclari da guncellensin.
   if (layout.lang && layout.lang !== lang) {
     lang = layout.lang

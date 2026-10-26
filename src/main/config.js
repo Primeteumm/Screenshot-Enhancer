@@ -46,9 +46,9 @@ const DEFAULTS = {
     enabled: true,
     // slide (yukari kayarak) | side (yandan) | pop (buyuyerek) | fade
     type: 'slide',
-    enterDuration: 420,
-    exitDuration: 220,
-    easing: 'spring',
+    enterDuration: 260,
+    exitDuration: 180,
+    easing: 'smooth',
     travel: 56
   },
   shortcuts: {
@@ -79,7 +79,7 @@ const ENUMS = {
     'left', 'right',
     'bottom-left', 'bottom-center', 'bottom-right'
   ],
-  'preview.theme': ['dark', 'light'],
+  'preview.theme': ['dark', 'light', 'glass'],
   'capture.clipboardMode': ['screenshots', 'allImages'],
   'animation.type': ['slide', 'side', 'pop', 'fade'],
   'animation.easing': ['linear', 'smooth', 'soft', 'snappy', 'spring', 'inOut']
