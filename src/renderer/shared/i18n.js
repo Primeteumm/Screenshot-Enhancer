@@ -1,3 +1,4 @@
+
 // Arayuz metinleri. Hem ana surec (require) hem de pencereler (<script>)
 // ayni dosyayi kullanir; boylece her metnin tek bir kaynagi olur.
 ;(function (root) {
@@ -332,6 +333,170 @@
 
       'footer.test': 'Test preview',
       'footer.reset': 'Defaults'
+    },
+
+    de: {
+      'app.paused': 'Screenshot Enhancer - Aufnahme pausiert',
+
+      'tray.captureRegion': 'Bereich aufnehmen',
+      'tray.captureScreen': 'Gesamten Bildschirm aufnehmen',
+      'tray.pause': 'Aufnahme pausieren',
+      'tray.showLast': 'Letzte Aufnahme erneut anzeigen',
+      'tray.test': 'Vorschau testen',
+      'tray.clear': 'Offene Vorschauen schließen',
+      'tray.settings': 'Einstellungen...',
+      'tray.openFolder': 'Aufnahmeordner öffnen',
+      'tray.quit': 'Beenden',
+
+      'preview.title': 'Vorschau',
+      'preview.move': 'Fenster verschieben',
+      'preview.select': 'Zum gemeinsamen Verschieben auswählen',
+      'preview.close': 'Schließen',
+      'preview.copy': 'In Zwischenablage kopieren',
+      'preview.save': 'Speichern unter',
+      'preview.open': 'Öffnen',
+      'preview.ocr': 'Text in Zwischenablage kopieren',
+      'preview.reveal': 'Im Ordner anzeigen',
+      'preview.pin': 'Anheften',
+      'preview.pinned': 'Angeheftet',
+      'preview.unpinned': 'Nicht angeheftet',
+      'preview.reading': 'Text wird erkannt...',
+      'action.copied': 'In Zwischenablage kopiert',
+      'action.ocrUnavailable': 'Texterkennung nicht verfügbar',
+      'action.noText': 'Kein Text gefunden',
+      'action.textCopied': 'Text in Zwischenablage kopiert',
+      'action.saved': 'Gespeichert',
+      'dialog.save': 'Screenshot speichern',
+      'dialog.chooseFolder': 'Zu überwachenden Ordner auswählen',
+
+      'region.title': 'Bereich auswählen',
+      'region.hint': 'Ziehen, um einen Bereich auszuwählen &nbsp;·&nbsp; mit <b>Esc</b> abbrechen',
+
+      'settings.minimize': 'Minimieren',
+      'settings.close': 'Schließen (läuft im Infobereich weiter)',
+
+      'section.general': 'Allgemein',
+      'general.language': 'Sprache',
+      'general.language.note': 'Sprache der Benutzeroberfläche.',
+      'general.language.auto': 'Systemsprache',
+      'general.launchAtLogin': 'Mit Windows starten',
+      'general.launchAtLogin.note': 'Die App startet unauffällig im Infobereich.',
+      'general.launchAtLogin.dev': 'Entwicklungsmodus: Diese Einstellung funktioniert nur in der installierten Version zuverlässig.',
+      'general.startHidden': 'Fenster beim Start ausblenden',
+      'general.startHidden.note': 'Wenn deaktiviert, wird dieses Fenster bei jedem Start angezeigt.',
+
+      'section.capture': 'Aufnahme',
+      'capture.watchClipboard': 'Zwischenablage überwachen',
+      'capture.watchClipboard.note': 'Druck, Win+Umschalt+S, Alt+Druck und Screenshot-Tools.',
+      'capture.clipboardMode': 'Zwischenablage-Modus',
+      'capture.clipboardMode.screenshots': 'Nur Screenshots',
+      'capture.clipboardMode.allImages': 'Alle kopierten Bilder',
+      'capture.pollInterval': 'Prüfintervall',
+      'capture.pollInterval.note': 'Kürzere Intervalle reagieren schneller, benötigen aber etwas mehr CPU.',
+      'capture.watchFolders': 'Ordner überwachen',
+      'capture.watchFolders.note': 'Mit Win+Druck auf der Festplatte gespeicherte Screenshots.',
+      'capture.addFolder': 'Ordner hinzufügen',
+      'capture.noFolder': 'Kein Screenshot-Ordner gefunden',
+      'capture.auto': 'automatisch',
+      'capture.removeFolder': 'Aus Liste entfernen',
+
+      'section.appearance': 'Darstellung',
+      'preview.placement': 'Anzeigeposition',
+      'preview.placement.note': '„Am Aufnahmeort“ bedeutet: neben der letzten Cursorposition.',
+      'preview.placement.cursor': 'Am Aufnahmeort',
+      'preview.placement.fixed': 'Feste Position',
+      'preview.anchor': 'Bildschirmposition',
+      'preview.anchor.note': 'Die Vorschau erscheint an der gewählten Stelle des Aufnahmebildschirms.',
+      'anchor.top-left': 'Oben links',
+      'anchor.top-center': 'Oben mittig',
+      'anchor.top-right': 'Oben rechts',
+      'anchor.left': 'Links',
+      'anchor.right': 'Rechts',
+      'anchor.bottom-left': 'Unten links',
+      'anchor.bottom-center': 'Unten mittig',
+      'anchor.bottom-right': 'Unten rechts',
+      'preview.size': 'Vorschaugröße',
+      'preview.margin': 'Randabstand',
+      'preview.maxStack': 'Gleichzeitige Vorschauen',
+      'preview.maxStack.suffix': '',
+      'preview.autoHide': 'Anzeigedauer',
+      'preview.autoHide.note': 'Ganz nach links ziehen, damit Vorschauen bis zum Schließen sichtbar bleiben. Bei Mausberührung pausiert der Timer. Mit der Stecknadel bleibt eine einzelne Vorschau sichtbar.',
+      'preview.autoHide.suffix': ' s',
+      'preview.autoHide.zero': 'Bis zum Schließen',
+      'preview.opacity': 'Vorschau-Deckkraft',
+      'preview.opacity.note': 'Bei Mausberührung wird die Vorschau vollständig undurchsichtig.',
+      'preview.display': 'Bildschirm wählen',
+      'preview.display.note': 'Wenn mehrere Monitore angeschlossen sind.',
+      'preview.display.capture': 'Bildschirm der Aufnahme',
+      'preview.display.primary': 'Hauptbildschirm',
+      'display.label': 'Bildschirm {n} - {size}',
+      'display.primary': ' (Hauptbildschirm)',
+      'preview.theme': 'Design',
+      'preview.theme.dark': 'Dunkel',
+      'preview.theme.light': 'Hell',
+      'preview.toolbar': 'Symbolleiste',
+      'preview.toolbar.note': 'Schaltflächen zum Kopieren, Speichern und Öffnen beim Berühren der Vorschau mit der Maus.',
+
+      'section.shortcuts': 'Tastenkürzel',
+      'shortcuts.enabled': 'Globale Tastenkürzel',
+      'shortcuts.enabled.note': 'Funktionieren auch, wenn die App im Hintergrund läuft.',
+      'shortcuts.failed': 'Konnte nicht registriert werden (von anderer App belegt): ',
+      'shortcuts.captureRegion': 'Bereich aufnehmen',
+      'shortcuts.captureRegion.note': 'Friert den Bildschirm zur Bereichsauswahl ein; das Ergebnis erscheint als Vorschau.',
+      'shortcuts.captureScreen': 'Gesamten Bildschirm aufnehmen',
+      'shortcuts.captureScreen.note': 'Der gesamte Bildschirm unter dem Mauszeiger.',
+      'shortcuts.showLast': 'Letzte Aufnahme erneut anzeigen',
+      'shortcuts.showLast.note': 'Zeigt die Vorschau erneut an, wenn sie verschwunden ist.',
+      'shortcuts.togglePause': 'Aufnahme pausieren / fortsetzen',
+      'shortcuts.togglePause.note': 'Für Präsentationen oder Spiele.',
+      'shortcuts.none': 'Nicht festgelegt',
+      'shortcuts.recording': 'Tastenkombination drücken...',
+
+      'section.sound': 'Ton',
+      'sound.enabled': 'Aufnahmeton',
+      'sound.enabled.note': 'Ein kurzer Auslöseton beim Einblenden einer Vorschau.',
+      'sound.volume': 'Lautstärke',
+      'sound.listen': 'Ton anhören',
+      'sound.listen.note': 'Ohne Screenshot ausprobieren.',
+      'sound.play': 'Abspielen',
+
+      'section.animation': 'Animation',
+      'animation.enabled': 'Animationen',
+      'animation.type': 'Animationsart',
+      'animation.type.note': 'Wie die Vorschau eingeblendet wird.',
+      'animation.type.slide': 'Gleiten',
+      'animation.type.side': 'Seitlich hereingleiten',
+      'animation.type.pop': 'Aufpoppen',
+      'animation.type.fade': 'Einblenden',
+      'animation.easing': 'Bewegungskurve',
+      'animation.easing.spring': 'Federnd (ease-out-back)',
+      'animation.easing.soft': 'Sanft (ease-out-expo)',
+      'animation.easing.snappy': 'Spritzig',
+      'animation.easing.smooth': 'Fließend',
+      'animation.easing.inOut': 'Sanft ein- und ausgehend',
+      'animation.easing.linear': 'Linear',
+      'animation.enterDuration': 'Einblenddauer',
+      'animation.exitDuration': 'Ausblenddauer',
+      'animation.travel': 'Gleitstrecke',
+
+      'section.storage': 'Speicher',
+      'storage.prefix': 'Dateinamen-Präfix',
+      'storage.prefix.note': 'Der Name, der beim Ablegen der Datei angezeigt wird.',
+      'storage.keepDays': 'Temporäre Dateien behalten',
+      'storage.keepDays.note': 'Nur der eigene Ordner der App wird bereinigt.',
+      'storage.keep.1': '1 Tag',
+      'storage.keep.3': '3 Tage',
+      'storage.keep.7': '7 Tage',
+      'storage.keep.30': '30 Tage',
+      'storage.keep.0': 'Unbegrenzt',
+      'storage.folder': 'Aufnahmeordner',
+      'storage.open': 'Öffnen',
+      'storage.clear': 'Leeren',
+      'storage.stats': '{count} Dateien · {size}',
+      'storage.stats.one': '{count} Datei · {size}',
+
+      'footer.test': 'Vorschau testen',
+      'footer.reset': 'Standardwerte'
     }
   }
 
@@ -339,9 +504,13 @@
 
   // "auto": isletim sistemi dili Turkce ise Turkce, degilse Ingilizce.
   function resolve(setting, systemLocale) {
-    if (LANGUAGES.includes(setting)) return setting
-    return /^tr\b/i.test(systemLocale || '') ? 'tr' : 'en'
+    if (LANGUAGES.includes(setting)) return setting;
+    // Checks both setting and systemLocale for German
+    if (/^de\b/i.test(setting || '') || /^de\b/i.test(systemLocale || '')) return 'de';
+    if (/^tr\b/i.test(systemLocale || '')) return 'tr';
+    return 'en';
   }
+
 
   function translate(lang, key, vars) {
     const table = STRINGS[lang] || STRINGS.tr
