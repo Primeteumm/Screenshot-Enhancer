@@ -1,4 +1,3 @@
-
 // Arayuz metinleri. Hem ana surec (require) hem de pencereler (<script>)
 // ayni dosyayi kullanir; boylece her metnin tek bir kaynagi olur.
 ;(function (root) {
@@ -501,16 +500,12 @@
   }
 
   const LANGUAGES = Object.keys(STRINGS)
-
+  
   // "auto": isletim sistemi dili Turkce ise Turkce, degilse Ingilizce.
   function resolve(setting, systemLocale) {
-    if (LANGUAGES.includes(setting)) return setting;
-    // Checks both setting and systemLocale for German
-    if (/^de\b/i.test(setting || '') || /^de\b/i.test(systemLocale || '')) return 'de';
-    if (/^tr\b/i.test(systemLocale || '')) return 'tr';
-    return 'en';
+    if (LANGUAGES.includes(setting)) return setting
+    return /^tr\b/i.test(systemLocale || '') ? 'tr' : 'en'
   }
-
 
   function translate(lang, key, vars) {
     const table = STRINGS[lang] || STRINGS.tr
