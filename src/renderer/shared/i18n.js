@@ -340,7 +340,9 @@
   // "auto": isletim sistemi dili Turkce ise Turkce, degilse Ingilizce.
   function resolve(setting, systemLocale) {
     if (LANGUAGES.includes(setting)) return setting
-    return /^tr\b/i.test(systemLocale || '') ? 'tr' : 'en'
+
+    const base = String(systemLocale || '').toLowerCase().split(/[-_]/)[0]
+    return LANGUAGES.includes(base) ? base : 'en'
   }
 
   function translate(lang, key, vars) {
