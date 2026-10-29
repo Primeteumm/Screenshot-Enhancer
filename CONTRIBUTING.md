@@ -38,8 +38,7 @@ Translations are a great first contribution:
 1. Copy the `en` block in [`src/renderer/shared/i18n.js`](src/renderer/shared/i18n.js) under a new language code (e.g. `de`) and translate the values. Keep the keys and `{placeholders}` unchanged.
 2. Add the code to the allowed values of `general.language` in [`src/main/config.js`](src/main/config.js).
 3. Add an `<option>` for it in the language select in [`src/renderer/settings/index.html`](src/renderer/settings/index.html).
-4. Optionally, teach `resolve()` in the same `i18n.js` to pick the new language when the setting is "auto" and Windows uses it (today it only chooses between `tr` and `en`).
-5. Check every window (settings, thumbnail toolbar, tray menu) for text that overflows.
+4. Check every window (settings, thumbnail toolbar, tray menu) for text that overflows.
 
 ## License
 
