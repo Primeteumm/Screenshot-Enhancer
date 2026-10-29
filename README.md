@@ -195,7 +195,15 @@ scripts/               icon generator, OCR script
 
 ## Contributing
 
-Bug reports, feature ideas and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) to get started, or pick an issue labeled [`good first issue`](https://github.com/Primeteumm/Screenshot-Enhancer/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22). Translations into new languages are especially welcome.
+Bug reports, feature ideas and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) to get started, or pick an issue labeled [`good first issue`](https://github.com/Primeteumm/Screenshot-Enhancer/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22). Translations into new languages are especially welcome. Questions or ideas? Start a thread in [Discussions](https://github.com/Primeteumm/Screenshot-Enhancer/discussions).
+
+### Contributors
+
+Thanks to everyone who has helped make Screenshot Enhancer better!
+
+<a href="https://github.com/Primeteumm/Screenshot-Enhancer/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Primeteumm/Screenshot-Enhancer" alt="Contributors" />
+</a>
 
 ## License
 
