@@ -51,7 +51,7 @@ That's it. Click the tray icon to tweak anything.
 - **Quick actions on hover.** Copy, Save as, Open, Show in folder, Pin.
 - **Multi-monitor aware.** The thumbnail appears on the screen where the shot was taken, right next to your cursor (or in one of 8 fixed positions).
 - **Deeply customizable.** Position, size, stack count, timeout, opacity, theme, animation style and easing, capture sound, shortcuts, file retention.
-- **English and Turkish UI.** Follows your Windows language by default.
+- **Multilingual UI, including German.** Follows your Windows language by default.
 
 ## Installation
 
@@ -187,7 +187,7 @@ src/renderer/
   region/              region selection overlay
   settings/            settings UI
   shared/chime.js      capture sound synthesis
-  shared/i18n.js       Turkish / English UI strings (single source)
+  shared/i18n.js       UI translations (single source)
 scripts/               icon generator, OCR script
 ```
 
