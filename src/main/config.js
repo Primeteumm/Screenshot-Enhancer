@@ -72,7 +72,7 @@ const DEFAULTS = {
 // Serbest metin olarak kaydedilebilen ama sinirli deger kumesi olan alanlar.
 // Bozuk/eski bir deger okunursa varsayilana donulur.
 const ENUMS = {
-  'general.language': ['auto', 'tr', 'en', 'de'],
+  'general.language': ['auto', 'tr', 'en', 'de', 'fr'],
   'preview.placement': ['cursor', 'fixed'],
   'preview.anchor': [
     'top-left', 'top-center', 'top-right',
