@@ -334,7 +334,6 @@
       'footer.reset': 'Defaults'
     },
 
-
     fr: {
       'app.paused': 'Screenshot Enhancer - capture en pause',
 
@@ -402,8 +401,8 @@
 
       'section.appearance': 'Apparence',
       'preview.placement': 'Emplacement d’affichage',
-      'preview.placement.note': '« À l’emplacement de la capture » = à côté de la dernière position du curseur.',
-      'preview.placement.cursor': 'À l’emplacement de la capture',
+      'preview.placement.note': '« Au point de capture » = à côté de la dernière position du curseur.',
+      'preview.placement.cursor': 'Au point de capture',
       'preview.placement.fixed': 'Position fixe',
       'preview.anchor': 'Position à l’écran',
       'preview.anchor.note': 'L’aperçu apparaît à l’emplacement choisi sur l’écran où la capture a été prise.',
