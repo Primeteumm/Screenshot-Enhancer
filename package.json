@@ -9,7 +9,8 @@
     "start": "electron .",
     "dev": "electron . --dev",
     "icons": "node scripts/generate-icons.js",
-    "dist": "electron-builder --win"
+    "dist": "electron-builder --win",
+    "test": "node --test"
   },
   "dependencies": {
     "chokidar": "^3.6.0"

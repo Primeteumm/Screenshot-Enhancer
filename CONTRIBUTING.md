@@ -17,7 +17,7 @@ npm install
 npm start
 ```
 
-`npm run dist` builds the NSIS installer into `dist/`. `npm run icons` regenerates the icons.
+`npm test` runs the unit tests (Node's built-in test runner, no extra dependencies). `npm run dist` builds the NSIS installer into `dist/`. `npm run icons` regenerates the icons.
 
 The [project structure](README.md#build-from-source) and the [Windows quirks the app works around](README.md#how-it-works) are documented in the README. Please read the quirks section before touching `previewManager.js` or the preview window: several "obvious" simplifications break input or drag & drop.
 
@@ -26,7 +26,7 @@ The [project structure](README.md#build-from-source) and the [Windows quirks the
 1. Fork the repo and create a branch from `main`.
 2. Keep the change focused; one fix or feature per PR.
 3. Match the surrounding code style (plain CommonJS, no build step, no framework).
-4. Test it by running the app; describe how in the PR.
+4. Run `npm test` and test the change by running the app; describe how in the PR.
 5. If you change UI text, update both `tr` and `en` in `src/renderer/shared/i18n.js`.
 
 If you plan a bigger change, open an issue first so we can agree on the approach.
@@ -38,7 +38,8 @@ Translations are a great first contribution:
 1. Copy the `en` block in [`src/renderer/shared/i18n.js`](src/renderer/shared/i18n.js) under a new language code (e.g. `de`) and translate the values. Keep the keys and `{placeholders}` unchanged.
 2. Add the code to the allowed values of `general.language` in [`src/main/config.js`](src/main/config.js).
 3. Add an `<option>` for it in the language select in [`src/renderer/settings/index.html`](src/renderer/settings/index.html).
-4. Check every window (settings, thumbnail toolbar, tray menu) for text that overflows.
+4. Run `npm test`: it checks that your language has every key, keeps all `{placeholders}` and is registered in both places above.
+5. Check every window (settings, thumbnail toolbar, tray menu) for text that overflows.
 
 ## License
 

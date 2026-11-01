@@ -6,7 +6,7 @@ const { EventEmitter } = require('events')
 const DEFAULTS = {
   version: 1,
   general: {
-    // auto -> sistem dili Turkce ise Turkce, degilse Ingilizce
+    // auto -> sistem dili destekleniyorsa o dil, degilse Ingilizce (bkz. i18n.resolve)
     language: 'auto',
     launchAtLogin: false,
     startHidden: true
@@ -193,3 +193,8 @@ class Config extends EventEmitter {
 
 module.exports = new Config()
 module.exports.DEFAULTS = DEFAULTS
+module.exports.ENUMS = ENUMS
+// Testler icin
+module.exports.validate = validate
+module.exports.migrate = migrate
+module.exports.mergeInto = mergeInto
