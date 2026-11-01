@@ -664,11 +664,11 @@
   }
 
   const LANGUAGES = Object.keys(STRINGS)
-  
-  // "auto": isletim sistemi dili Turkce ise Turkce, degilse Ingilizce.
+
+  // "auto": sistem dilinin ana kodu (de-DE -> de) destekleniyorsa o dil,
+  // degilse Ingilizce.
   function resolve(setting, systemLocale) {
     if (LANGUAGES.includes(setting)) return setting
-
     const base = String(systemLocale || '').toLowerCase().split(/[-_]/)[0]
     return LANGUAGES.includes(base) ? base : 'en'
   }
