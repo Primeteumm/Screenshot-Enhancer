@@ -1,6 +1,6 @@
 {
   "name": "screenshot-enhancer",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "macOS-style screenshot preview for Windows: a floating, drag-and-drop thumbnail for every screenshot, with OCR.",
   "main": "src/main/index.js",
   "author": "Enes Aydin",
